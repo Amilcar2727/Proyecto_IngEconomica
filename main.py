@@ -5,6 +5,7 @@ class MatematicasFinancieras:
     def __init__(self,root):
         #Titulo de la ventana
         root.title("Matemáticas Financieras");
+        self.root = root
         self.MenuPrincipal(root);
     
     def IngresarOpcion(self,op):
@@ -32,7 +33,7 @@ class MatematicasFinancieras:
         listDesplegable.grid(column=2,row=3,padx=10,pady=10);
 
         #Botones
-        ttk.Button(mainframe, text="Seleccionar",command=self.IngresarOpcion(op_Seleccionada.get())).grid(column=1,row=3,sticky=W);
+        ttk.Button(mainframe, text="Seleccionar",command=lambda: self.IngresarOpcion(op_Seleccionada.get())).grid(column=1,row=3,sticky=W);
         ttk.Button(mainframe, text="Salir",command=self.SalirPrograma).grid(column=4,row=3,sticky=E);
         #Padding
         for child in mainframe.winfo_children():
