@@ -80,15 +80,20 @@ class InterfazInteresSimple:
     
     #Llamado a las Operaciones
     def CalcularResultados(self):
+        #Si se da textos en blancos o vacios
         if((self.capitalInicTxt.get()=="" or self.capitalInicTxt == None) or
            (self.tasaTxt.get()=="" or self.tasaTxt == None) or
            (self.periodoTxt.get()=="" or self.periodoTxt == None)):
+            #Si hay datos previos, limpiarlos
             if self.datosBlancos is not None:
                 self.datosBlancos.destroy();
+            #Solicitar datos
             self.datosBlancos = ttk.Label(self.interfazIS, text="Por favor, rellena todos los espacios",font=("Helvetica", 9, "bold"),foreground="red");
             self.datosBlancos.grid(column=0,row=6,columnspan=2,sticky=(S,W));
+            #Timer
             self.timer_id = self.interfazIS.after(5000,self.datosBlancos.destroy);
             return;
+        #Caso contrario calcular Interes y Capital Futuro
         interesT = self.CalcularInteresSimple();
         capitalFuturo = self.CalcularCapitalFuturo(interesT);
         self.interesText.set(interesT);
@@ -106,7 +111,7 @@ class InterfazInteresSimple:
         valores = [float(capitalInicial), float(interesT)];
         
         # Crear gráfico de pie
-        fig, ax = plt.subplots(figsize=(3,2));
+        fig, ax = plt.subplots(figsize=(3,2)); #Escala del grafico
         ax.set_title("Capital VS Interes");
         ax.pie(valores, labels=etiquetas, autopct='%1.1f%%', startangle=90);
         ax.axis('equal')  # Verificar grafico es circulo cerrado.
@@ -121,6 +126,7 @@ class InterfazInteresSimple:
     def CalcularCapitalFuturo(self,interesT):
         resultado = OperacionesMF.CapitalFuturo(self,self.capitalInicTxt.get(),interesT);
         return resultado;
+    # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):
         if self.timer_id is not None:
             self.interfazIS.after_cancel(self.timer_id);
