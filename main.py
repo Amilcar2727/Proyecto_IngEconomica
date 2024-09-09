@@ -1,6 +1,6 @@
 from tkinter import *;
 from tkinter import ttk;
-from InteresSimple import *;
+from InteresSimple import InterfazInteresSimple;
 
 class MatematicasFinancieras:
     """
@@ -39,9 +39,9 @@ class MatematicasFinancieras:
         elif(op == "Interes Simple"):
             #Limpiar la pantalla y mostrar nueva pantalla
             self.LimpiarPantalla();
-            InterfazInteresSimple(self,root);
+            InterfazInteresSimple(self.root);
     def LimpiarPantalla(self):
-        for widget in self.root.winfo_children():
+        for widget in root.winfo_children():
             widget.destroy();
             
     def SalirPrograma(self):
@@ -62,7 +62,7 @@ class MatematicasFinancieras:
         
         #Menu Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-");
-        self.opciones = ['Interés Simple'];
+        self.opciones = ['Interes Simple'];
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox,values=self.opciones);
         self.combobox["state"]="readonly";
         self.combobox.grid(column=2,row=3,padx=10);
