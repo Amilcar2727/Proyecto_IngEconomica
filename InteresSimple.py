@@ -8,6 +8,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import re;
 
 class InterfazInteresSimple:
+    #Metodo Inicial
     def __init__(self,root):
         self.root = root;
         self.interfazIS = Toplevel();
@@ -16,7 +17,8 @@ class InterfazInteresSimple:
         self.timer_id = None;
         self.datosBlancos = None;
         self.MenuInteresS();
-        
+    
+    #Interfaz Interes Simple
     def MenuInteresS(self):
         self.tituloLb = ttk.Label(self.interfazIS, text="CALCULO DE INTERÉS SIMPLE",font=("Helvetica", 10, "bold"));
         self.tituloLb.grid(column=0,row=0,columnspan=3,pady=10,sticky=(N,W));
@@ -70,20 +72,13 @@ class InterfazInteresSimple:
         #Evitar bugs y cerrando timers antes de un cerrado por el usuario
         self.interfazIS.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
     
-    def Cerrado_manual(self):
-        if self.timer_id is not None:
-            self.interfazIS.after_cancel(self.timer_id);
-        self.interfazIS.destroy();
-        self.root.destroy();
-        #ELiminamos grafico
-        plt.close('all');
-        print("El programa se ha cerrado correctamente.");
     #Validar solo entrada numerica
     def Check_Cap(self,newval):
-        return re.match('^[0-9]*$', newval) is not None and len(newval)<=5;
+        return re.match('^[0-9]*$', newval) is not None and len(newval)<=10;
     def Check_Num(self,newval):
         return re.match('^[0-9]*$', newval) is not None and len(newval)<=2;
     
+    #Llamado a las Operaciones
     def CalcularResultados(self):
         if((self.capitalInicTxt.get()=="" or self.capitalInicTxt == None) or
            (self.tasaTxt.get()=="" or self.tasaTxt == None) or
@@ -99,9 +94,9 @@ class InterfazInteresSimple:
         self.interesText.set(interesT);
         self.capitalFText.set(capitalFuturo);
         #Mostrar Grafico
-        self.MostrarGrafico(self.capitalInicTxt.get(),interesT,capitalFuturo);
+        self.MostrarGrafico(self.capitalInicTxt.get(),interesT);
     
-    def MostrarGrafico(self, capitalInicial, interesT, capitalFuturo):
+    def MostrarGrafico(self, capitalInicial, interesT):
         # Limpiar el área del gráfico antes de dibujar uno nuevo
         for widget in self.grafico_frame.winfo_children():
             widget.destroy();
@@ -126,7 +121,15 @@ class InterfazInteresSimple:
     def CalcularCapitalFuturo(self,interesT):
         resultado = OperacionesMF.CapitalFuturo(self,self.capitalInicTxt.get(),interesT);
         return resultado;
-    
+    def Cerrado_manual(self):
+        if self.timer_id is not None:
+            self.interfazIS.after_cancel(self.timer_id);
+        self.interfazIS.destroy();
+        self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
+        print("El programa se ha cerrado correctamente.");
+        
     def VolverMenu(self):
         if self.interfazIS.winfo_exists():
             #Eliminamos la segunda ventana

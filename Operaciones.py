@@ -1,9 +1,9 @@
 class OperacionesMF:
     def InteresAcumulado(self,capital,tazaInteres,periodo):   
         try:
-            capital = int(capital);
+            capital = float(capital);
             tazaInteres = float(tazaInteres);
-            periodo = int(periodo);
+            periodo = float(periodo);
             
             return capital*(tazaInteres/100)*periodo;
         except ValueError:
@@ -12,8 +12,8 @@ class OperacionesMF:
         
     def CapitalFuturo(self,capital,interes):
         try:
-            capital = int(capital);
-            interes = int(interes);
+            capital = float(capital);
+            interes = float(interes);
             return capital+interes;
         except ValueError:
             pass;

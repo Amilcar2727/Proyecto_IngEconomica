@@ -26,29 +26,38 @@ class MatematicasFinancieras:
     def __init__(self,root):
         #Titulo de la ventana
         root.title("Matemáticas Financieras");
+        #Root principal
         self.root = root;
+        #Llamada a la interfaz Principal
         self.MenuPrincipal(root);
     
     def IngresarOpcion(self):
+        #Obtener el valor actual del combobox
         op = self.combobox.get();
-        #Si no se seleccionó ninguna opcion, marca error:
+        #Si se selecciona la opcion que solo sirve de guia
         if(op=="-Seleccionar-"):
+            #Arrojar un pequeño error
             opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida",font=("Helvetica", 7, "bold"),foreground="red");
             opIncorrecta.grid(column=2,row=4,columnspan=2,sticky=(N,W));
             self.root.after(5000,opIncorrecta.destroy);
+        #Si se selecciona la opcion de Interes S.
         elif(op == "Interes Simple"):
             # Ocultar la ventana principal
             self.root.withdraw();
+            # Llamar al Metodo de la otra interfaz
             self.ventanaIS = InterfazInteresSimple(self.root);
-            
+    
+    # Salir del Programa
     def SalirPrograma(self):
+        # Destruye el root principal
         self.root.destroy();
+    # Interfaz principal
     def MenuPrincipal(self,root):
         #Grid
         root.columnconfigure([0,1,2,3,4],weight=1);
         root.rowconfigure([0,1,2,3,4],weight=1); 
         
-        #Textos
+        #Textos Principales
         self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS",font=("Helvetica", 10, "bold"));
         self.lb1.grid(column=2,row=1,columnspan=2,sticky=N);
         self.lb2 = ttk.Label(root, text="Seleccione una opcion:");
@@ -71,5 +80,7 @@ class MatematicasFinancieras:
 
 #Main Interfaz
 root = Tk();
+#Tamaño y posición de la ventana
 root.geometry("400x250+250+150");
+#Llamar al metodo principal
 MatematicasFinancieras(root);
