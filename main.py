@@ -26,19 +26,19 @@ class MatematicasFinancieras:
     def __init__(self,root):
         #Titulo de la ventana
         root.title("Matemáticas Financieras");
-        self.root = root
+        self.root = root;
         self.MenuPrincipal(root);
     
     def IngresarOpcion(self):
         op = self.combobox.get();
         #Si no se seleccionó ninguna opcion, marca error:
         if(op=="-Seleccionar-"):
-            opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida");
-            opIncorrecta.grid(column=2,row=4,columnspan=3,sticky=N);
+            opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida",font=("Helvetica", 7, "bold"),foreground="red");
+            opIncorrecta.grid(column=2,row=4,columnspan=2,sticky=(N,W));
             self.root.after(5000,opIncorrecta.destroy);
         elif(op == "Interes Simple"):
             # Ocultar la ventana principal
-            self.root.withdraw()
+            self.root.withdraw();
             self.ventanaIS = InterfazInteresSimple(self.root);
             
     def SalirPrograma(self):
@@ -49,9 +49,9 @@ class MatematicasFinancieras:
         root.rowconfigure([0,1,2,3,4],weight=1); 
         
         #Textos
-        self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS",font=("Helvetica", 10, "bold"))
+        self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS",font=("Helvetica", 10, "bold"));
         self.lb1.grid(column=2,row=1,columnspan=2,sticky=N);
-        self.lb2 = ttk.Label(root, text="Seleccione una opcion:")
+        self.lb2 = ttk.Label(root, text="Seleccione una opcion:");
         self.lb2.grid(column=2,row=2,columnspan=2,sticky=(N,S),padx=4);
         
         #Menu Desplegable
@@ -62,9 +62,9 @@ class MatematicasFinancieras:
         self.combobox.grid(column=2,row=3,padx=5,pady=1,sticky=(E,W));
         
         #Botones
-        selB = ttk.Button(root, text="Seleccionar",command=self.IngresarOpcion)
+        selB = ttk.Button(root, text="Seleccionar",command=self.IngresarOpcion);
         selB.grid(column=1,row=3,padx=10,sticky=(E,W));
-        exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma)
+        exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma);
         exitB.grid(column=4,row=3,padx=10,sticky=(E,W));
         #Evento
         root.mainloop();

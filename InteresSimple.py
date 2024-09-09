@@ -90,7 +90,7 @@ class InterfazInteresSimple:
            (self.periodoTxt.get()=="" or self.periodoTxt == None)):
             if self.datosBlancos is not None:
                 self.datosBlancos.destroy();
-            self.datosBlancos = ttk.Label(self.interfazIS, text="Por favor, rellena todos los espacios");
+            self.datosBlancos = ttk.Label(self.interfazIS, text="Por favor, rellena todos los espacios",font=("Helvetica", 9, "bold"),foreground="red");
             self.datosBlancos.grid(column=0,row=6,columnspan=2,sticky=(S,W));
             self.timer_id = self.interfazIS.after(5000,self.datosBlancos.destroy);
             return;
