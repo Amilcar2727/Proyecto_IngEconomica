@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import ttk
 from Operaciones import OperacionesMF
-import time;
+#Grafico
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 #Verificacion
 import re;
 
@@ -9,7 +11,7 @@ class InterfazInteresSimple:
     def __init__(self,root):
         self.root = root;
         self.interfazIS = Toplevel();
-        self.interfazIS.geometry("400x300+250+150");
+        self.interfazIS.geometry("600x400+250+150");
         self.interfazIS.title("Calculando Interes Simple");
         self.timer_id = None;
         self.datosBlancos = None;
@@ -62,6 +64,9 @@ class InterfazInteresSimple:
         #Boton Volver Menu Principal
         self.volverMenuBt = ttk.Button(self.interfazIS, text="Volver Menu",command=self.VolverMenu)
         self.volverMenuBt.grid(column=2,row=10,columnspan=1,sticky=(W,S));
+        #Grafico pie
+        self.grafico_frame = ttk.Frame(self.interfazIS);
+        self.grafico_frame.grid(column=3, row=1, rowspan=9, padx=10, pady=10, sticky=(N,E,S,W));
         #Evitar bugs y cerrando timers antes de un cerrado por el usuario
         self.interfazIS.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
     
@@ -70,6 +75,8 @@ class InterfazInteresSimple:
             self.interfazIS.after_cancel(self.timer_id);
         self.interfazIS.destroy();
         self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
         print("El programa se ha cerrado correctamente.");
     #Validar solo entrada numerica
     def Check_Cap(self,newval):
@@ -88,9 +95,31 @@ class InterfazInteresSimple:
             self.timer_id = self.interfazIS.after(5000,self.datosBlancos.destroy);
             return;
         interesT = self.CalcularInteresSimple();
+        capitalFuturo = self.CalcularCapitalFuturo(interesT);
         self.interesText.set(interesT);
-        self.capitalFText.set(self.CalcularCapitalFuturo(interesT));
+        self.capitalFText.set(capitalFuturo);
+        #Mostrar Grafico
+        self.MostrarGrafico(self.capitalInicTxt.get(),interesT,capitalFuturo);
+    
+    def MostrarGrafico(self, capitalInicial, interesT, capitalFuturo):
+        # Limpiar el área del gráfico antes de dibujar uno nuevo
+        for widget in self.grafico_frame.winfo_children():
+            widget.destroy();
         
+        # Datos para el gráfico
+        etiquetas = ['Capital Inicial', 'Interés'];
+        valores = [float(capitalInicial), float(interesT)];
+        
+        # Crear gráfico de pie
+        fig, ax = plt.subplots(figsize=(4,3));
+        ax.set_title("Capital VS Interes");
+        ax.pie(valores, labels=etiquetas, autopct='%1.1f%%', startangle=90);
+        ax.axis('equal')  # Verificar grafico es circulo cerrado.
+        # Mostrar gráfico en Tkinter
+        canvas = FigureCanvasTkAgg(fig, master=self.grafico_frame);
+        canvas.draw();
+        canvas.get_tk_widget().pack(fill=BOTH, expand=True);
+    
     def CalcularInteresSimple(self):
         resultado = OperacionesMF.InteresAcumulado(self,self.capitalInicTxt.get(),self.tasaTxt.get(),self.periodoTxt.get());
         return resultado;
@@ -99,9 +128,11 @@ class InterfazInteresSimple:
         return resultado;
     
     def VolverMenu(self):
-        if self.interfazIS.winfo_exists():    
+        if self.interfazIS.winfo_exists():
             #Eliminamos la segunda ventana
             self.interfazIS.destroy();
+            #ELiminamos grafico
+            plt.close('all');
             #Llamamos de nuevo a la interfaz principal
             self.root.deiconify();
         
