@@ -61,7 +61,13 @@ class InterfazInteresSimple:
         return resultado;
     
     def VolverMenu(self):
+        #Limpiamos la pantalla antes de regresar
+        self.LimpiarPantalla();
+        #Importamos el main.py para poder llamar de nuevo a la interfaz principal
+        from main import MatematicasFinancieras;
+        MatematicasFinancieras(self.root);
         return;
     def LimpiarPantalla(self):
-        return;
+        for widget in self.root.winfo_children():
+            widget.destroy();
         
