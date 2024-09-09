@@ -49,7 +49,7 @@ class MatematicasFinancieras:
         root.rowconfigure([0,1,2,3,4],weight=1); 
         
         #Textos
-        self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS")
+        self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS",font=("Helvetica", 10, "bold"))
         self.lb1.grid(column=2,row=1,columnspan=2,sticky=N);
         self.lb2 = ttk.Label(root, text="Seleccione una opcion:")
         self.lb2.grid(column=2,row=2,columnspan=2,sticky=(N,S),padx=4);
