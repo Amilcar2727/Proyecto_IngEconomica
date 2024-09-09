@@ -36,6 +36,7 @@ class MatematicasFinancieras:
         if(op=="-Seleccionar-"):
             opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida");
             opIncorrecta.grid(column=2,row=4,columnspan=3,sticky=N);
+            self.root.after(5000,opIncorrecta.destroy);
         elif(op == "Interes Simple"):
             #Limpiar la pantalla y mostrar nueva pantalla
             self.LimpiarPantalla();
