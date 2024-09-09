@@ -1,6 +1,6 @@
 # 🌟 Proyecto_IngEconomica | Python | Matemáticas Financieras
 <h3>ℹʚ˚₊INFORMACIÓN</h3>
-<p>Proyecto realizado por el grupo Nº5 para el curso de Ingeniería Económica, dictado por la Mg. Ing. Vanessa Maribel Choque Soto, el cual contiene una interfaz sencilla para poder calcular el Interez Simple de un Capital, mostrando un gráfico incorporado.</p>
+<p>Proyecto realizado por el grupo Nº6 para el curso de Ingeniería Económica, dictado por la Mg. Ing. Vanessa Maribel Choque Soto, el cual contiene una interfaz sencilla para poder calcular el Interez Simple de un Capital, mostrando un gráfico incorporado.</p>
 <h3>🍙ʚ˚₊Integrantes</h3>
 <p>₊-Callanaupa Salcedo, Joseph Jesus - 225420</p>
 <p>₊-Cornejo Castro, Angela Lorena - 192418</p>
