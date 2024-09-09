@@ -11,6 +11,8 @@ class InterfazInteresSimple:
         self.interfazIS = Toplevel();
         self.interfazIS.geometry("400x300+250+150");
         self.interfazIS.title("Calculando Interes Simple");
+        self.timer_id = None;
+        self.datosBlancos = None;
         self.MenuInteresS();
         
     def MenuInteresS(self):
@@ -60,7 +62,15 @@ class InterfazInteresSimple:
         #Boton Volver Menu Principal
         self.volverMenuBt = ttk.Button(self.interfazIS, text="Volver Menu",command=self.VolverMenu)
         self.volverMenuBt.grid(column=2,row=10,columnspan=1,sticky=(W,S));
-        
+        #Evitar bugs y cerrando timers antes de un cerrado por el usuario
+        self.interfazIS.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
+    
+    def Cerrado_manual(self):
+        if self.timer_id is not None:
+            self.interfazIS.after_cancel(self.timer_id);
+        self.interfazIS.destroy();
+        self.root.destroy();
+        print("El programa se ha cerrado correctamente.");
     #Validar solo entrada numerica
     def Check_Cap(self,newval):
         return re.match('^[0-9]*$', newval) is not None and len(newval)<=5;
@@ -71,9 +81,11 @@ class InterfazInteresSimple:
         if((self.capitalInicTxt.get()=="" or self.capitalInicTxt == None) or
            (self.tasaTxt.get()=="" or self.tasaTxt == None) or
            (self.periodoTxt.get()=="" or self.periodoTxt == None)):
-            datosBlancos = ttk.Label(self.interfazIS, text="Por favor, rellena todos los espacios");
-            datosBlancos.grid(column=1,row=11,columnspan=2,sticky=S);
-            self.interfazIS.after(5000,datosBlancos.destroy);
+            if self.datosBlancos is not None:
+                self.datosBlancos.destroy();
+            self.datosBlancos = ttk.Label(self.interfazIS, text="Por favor, rellena todos los espacios");
+            self.datosBlancos.grid(column=1,row=11,columnspan=2,sticky=S);
+            self.timer_id = self.interfazIS.after(5000,self.datosBlancos.destroy);
             return;
         interesT = self.CalcularInteresSimple();
         self.interesText.set(interesT);
@@ -87,9 +99,9 @@ class InterfazInteresSimple:
         return resultado;
     
     def VolverMenu(self):
-        #Limpiamos la pantalla antes de regresar
-        self.interfazIS.destroy();
-        #Importamos el main.py para poder llamar de nuevo a la interfaz principal
-        self.root.deiconify();
-        return;
+        if self.interfazIS.winfo_exists():    
+            #Eliminamos la segunda ventana
+            self.interfazIS.destroy();
+            #Llamamos de nuevo a la interfaz principal
+            self.root.deiconify();
         

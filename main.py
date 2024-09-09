@@ -31,7 +31,6 @@ class MatematicasFinancieras:
     
     def IngresarOpcion(self):
         op = self.combobox.get();
-        print(f"Se ha seleccionado: {op}{type(op)}");
         #Si no se seleccionó ninguna opcion, marca error:
         if(op=="-Seleccionar-"):
             opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida");
