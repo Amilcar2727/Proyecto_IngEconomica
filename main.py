@@ -29,15 +29,17 @@ class MatematicasFinancieras:
         self.root = root
         self.MenuPrincipal(root);
     
-    def IngresarOpcion(self,op):
-        print(f"Se ha seleccionado: {op}");
+    def IngresarOpcion(self):
+        op = self.combobox.get();
+        print(f"Se ha seleccionado: {op}{type(op)}");
         if(op=="-Seleccionar-"):
-            label = ttk.Label(root, text="").config(text="Por favor, selecciona una opción valida");
+            opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida");
+            opIncorrecta.grid(column=2,row=4,columnspan=3,sticky=N);
         elif(op == "Interes Simple"):
             self.MenuInteresS();
             
     def SalirPrograma(self):
-        root.destroy();
+        self.root.destroy();
     def MenuInteresS(self):
         ventanaInteresS = Toplevel(self.root);
         return;
@@ -47,18 +49,24 @@ class MatematicasFinancieras:
         root.rowconfigure(0,weight=1); 
         """
         #Textos
-        ttk.Label(root, text="MATEMATICAS FINANCIERAS").grid(column=2,row=1,columnspan=3,sticky=N);
-        ttk.Label(root, text="Seleccione una opcion:").grid(column=2,row=2,columnspan=3,sticky=N);
+        self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS")
+        self.lb1.grid(column=2,row=1,columnspan=3,sticky=N);
+        self.lb2 = ttk.Label(root, text="Seleccione una opcion:")
+        self.lb2.grid(column=2,row=2,columnspan=3,sticky=N);
         #Barra de Seleccion
-        op_Seleccionada = StringVar();
-        opciones = ['-Seleccionar-','Interés Simple'];
+        self.opciones = ['-Seleccionar-','Interés Simple'];
         #Menu Desplegable
-        combobox = ttk.Combobox(root, values=opciones, state="readonly");
-        combobox.grid(column=2,row=3,padx=10);
-        combobox.current(0);
+        
+        self.combobox = ttk.Combobox(root, values=self.opciones);
+        self.combobox["state"]="readonly";
+        self.combobox.current(0);
+        self.combobox.grid(column=2,row=3,padx=10);
+        
         #Botones
-        ttk.Button(root, text="Seleccionar",command=lambda: self.IngresarOpcion(op_Seleccionada.get())).grid(column=1,row=3,sticky=(W,S));
-        ttk.Button(root, text="Salir",command=self.SalirPrograma).grid(column=4,row=3,sticky=E);
+        selB = ttk.Button(root, text="Seleccionar",command=self.IngresarOpcion)
+        selB.grid(column=1,row=3,sticky=(W,S));
+        exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma)
+        exitB.grid(column=4,row=3,sticky=(E,S));
         #Padding
         for child in root.winfo_children():
             child.grid_configure(padx=5,pady=5);
