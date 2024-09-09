@@ -44,35 +44,32 @@ class MatematicasFinancieras:
     def SalirPrograma(self):
         self.root.destroy();
     def MenuPrincipal(self,root):
-        """ 
-        root.columnconfigure(0,weight=1);
-        root.rowconfigure(0,weight=1); 
-        """
+        #Grid
+        root.columnconfigure([0,1,2,3,4],weight=1);
+        root.rowconfigure([0,1,2,3,4],weight=1); 
+        
         #Textos
         self.lb1 = ttk.Label(root, text="MATEMATICAS FINANCIERAS")
-        self.lb1.grid(column=2,row=1,columnspan=3,sticky=N);
+        self.lb1.grid(column=2,row=1,columnspan=2,sticky=N);
         self.lb2 = ttk.Label(root, text="Seleccione una opcion:")
-        self.lb2.grid(column=2,row=2,columnspan=3,sticky=N);
+        self.lb2.grid(column=2,row=2,columnspan=2,sticky=(N,S),padx=4);
         
         #Menu Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-");
         self.opciones = ['Interes Simple'];
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox,values=self.opciones);
         self.combobox["state"]="readonly";
-        self.combobox.grid(column=2,row=3,padx=10);
+        self.combobox.grid(column=2,row=3,padx=5,pady=1,sticky=(E,W));
         
         #Botones
         selB = ttk.Button(root, text="Seleccionar",command=self.IngresarOpcion)
-        selB.grid(column=1,row=3,sticky=(W,S));
+        selB.grid(column=1,row=3,padx=10,sticky=(E,W));
         exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma)
-        exitB.grid(column=4,row=3,sticky=(E,S));
-        #Padding
-        for child in root.winfo_children():
-            child.grid_configure(padx=5,pady=5);
+        exitB.grid(column=4,row=3,padx=10,sticky=(E,W));
         #Evento
         root.mainloop();
 
 #Main Interfaz
 root = Tk();
-root.geometry("400x300+250+150");
+root.geometry("400x250+250+150");
 MatematicasFinancieras(root);
