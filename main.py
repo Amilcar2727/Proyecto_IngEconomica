@@ -1,6 +1,6 @@
-from tkinter import *
+from tkinter import *;
 from tkinter import ttk;
-from Operaciones import OperacionesMF;
+from InteresSimple import *;
 
 class MatematicasFinancieras:
     """
@@ -32,16 +32,22 @@ class MatematicasFinancieras:
     def IngresarOpcion(self):
         op = self.combobox.get();
         print(f"Se ha seleccionado: {op}{type(op)}");
+        #Si no se seleccionó ninguna opcion, marca error:
         if(op=="-Seleccionar-"):
             opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida");
             opIncorrecta.grid(column=2,row=4,columnspan=3,sticky=N);
         elif(op == "Interes Simple"):
-            self.MenuInteresS();
+            #Limpiar la pantalla y mostrar nueva pantalla
+            self.LimpiarPantalla();
+            InterfazInteresSimple(self,root);
+    def LimpiarPantalla(self):
+        for widget in self.root.winfo_children():
+            widget.destroy();
             
     def SalirPrograma(self):
         self.root.destroy();
     def MenuInteresS(self):
-        ventanaInteresS = Toplevel(self.root);
+        
         return;
     def MenuPrincipal(self,root):
         """ 
