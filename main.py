@@ -53,13 +53,12 @@ class MatematicasFinancieras:
         self.lb1.grid(column=2,row=1,columnspan=3,sticky=N);
         self.lb2 = ttk.Label(root, text="Seleccione una opcion:")
         self.lb2.grid(column=2,row=2,columnspan=3,sticky=N);
-        #Barra de Seleccion
-        self.opciones = ['-Seleccionar-','Interés Simple'];
-        #Menu Desplegable
         
-        self.combobox = ttk.Combobox(root, values=self.opciones);
+        #Menu Desplegable
+        self.textoComboBox = StringVar(value="-Seleccionar-");
+        self.opciones = ['Interés Simple'];
+        self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox,values=self.opciones);
         self.combobox["state"]="readonly";
-        self.combobox.current(0);
         self.combobox.grid(column=2,row=3,padx=10);
         
         #Botones
