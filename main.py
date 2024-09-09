@@ -38,18 +38,12 @@ class MatematicasFinancieras:
             opIncorrecta.grid(column=2,row=4,columnspan=3,sticky=N);
             self.root.after(5000,opIncorrecta.destroy);
         elif(op == "Interes Simple"):
-            #Limpiar la pantalla y mostrar nueva pantalla
-            self.LimpiarPantalla();
-            InterfazInteresSimple(self.root);
-    def LimpiarPantalla(self):
-        for widget in root.winfo_children():
-            widget.destroy();
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            self.ventanaIS = InterfazInteresSimple(self.root);
             
     def SalirPrograma(self):
         self.root.destroy();
-    def MenuInteresS(self):
-        
-        return;
     def MenuPrincipal(self,root):
         """ 
         root.columnconfigure(0,weight=1);
