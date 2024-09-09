@@ -31,36 +31,36 @@ class MatematicasFinancieras:
     
     def IngresarOpcion(self,op):
         print(f"Se ha seleccionado: {op}");
-        if(op == "Interes Simple"):
+        if(op=="-Seleccionar-"):
+            label = ttk.Label(root, text="").config(text="Por favor, selecciona una opción valida");
+        elif(op == "Interes Simple"):
             self.MenuInteresS();
+            
     def SalirPrograma(self):
         root.destroy();
     def MenuInteresS(self):
-        
+        ventanaInteresS = Toplevel(self.root);
         return;
     def MenuPrincipal(self,root):
-        #Creamos el frame de la ventana
-        mainframe = ttk.Frame(root,padding="12 3 12 10");
-        mainframe.grid(column=0,row=0,sticky=(N,W,E,S));
+        """ 
         root.columnconfigure(0,weight=1);
-        root.rowconfigure(0,weight=1);
+        root.rowconfigure(0,weight=1); 
+        """
         #Textos
-        ttk.Label(mainframe, text="MATEMATICAS FINANCIERAS").grid(column=2,row=1,sticky=N);
-        ttk.Label(mainframe, text="Seleccione una opcion:").grid(column=2,row=2,sticky=W);
-        
+        ttk.Label(root, text="MATEMATICAS FINANCIERAS").grid(column=2,row=1,columnspan=3,sticky=N);
+        ttk.Label(root, text="Seleccione una opcion:").grid(column=2,row=2,columnspan=3,sticky=N);
         #Barra de Seleccion
         op_Seleccionada = StringVar();
-        op_Seleccionada.set("-Seleccionar-");
-        opciones = ["Interés Simple"];
+        opciones = ['-Seleccionar-','Interés Simple'];
         #Menu Desplegable
-        listDesplegable = OptionMenu(mainframe,op_Seleccionada,*opciones,command=self.IngresarOpcion);
-        listDesplegable.grid(column=2,row=3,padx=10,pady=10);
-
+        combobox = ttk.Combobox(root, values=opciones, state="readonly");
+        combobox.grid(column=2,row=3,padx=10);
+        combobox.current(0);
         #Botones
-        ttk.Button(mainframe, text="Seleccionar",command=lambda: self.IngresarOpcion(op_Seleccionada.get())).grid(column=1,row=3,sticky=W);
-        ttk.Button(mainframe, text="Salir",command=self.SalirPrograma).grid(column=4,row=3,sticky=E);
+        ttk.Button(root, text="Seleccionar",command=lambda: self.IngresarOpcion(op_Seleccionada.get())).grid(column=1,row=3,sticky=(W,S));
+        ttk.Button(root, text="Salir",command=self.SalirPrograma).grid(column=4,row=3,sticky=E);
         #Padding
-        for child in mainframe.winfo_children():
+        for child in root.winfo_children():
             child.grid_configure(padx=5,pady=5);
         #Evento
         root.mainloop();
