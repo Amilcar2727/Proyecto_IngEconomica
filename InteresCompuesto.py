@@ -124,7 +124,7 @@ class InterfazInteresCompuesto:
         resultado = OperacionesMF.InteresCompuestoAcumulado(self.capitalInicTxt.get(),self.tasaTxt.get(),self.periodoTxt.get());
         return resultado;
     def CalcularCapitalFuturo(self,interesT):
-        resultado = OperacionesMF.CapitalCompuestoFuturo(self.capitalInicTxt.get(),interesT,self.periodoTxt.get());
+        resultado = OperacionesMF.CapitalCompuestoFuturo(self.capitalInicTxt.get(),self.tasaTxt.get(),self.periodoTxt.get());
         return resultado;
     # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):

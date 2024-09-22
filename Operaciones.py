@@ -38,12 +38,12 @@ class OperacionesMF:
             pass;
     
     @staticmethod
-    def CapitalCompuestoFuturo(capital,interes,periodo):
+    def CapitalCompuestoFuturo(capital,tazaInteres,periodo):
         try:
             capital = float(capital);
-            interes = float(interes);
+            tazaInteres = float(tazaInteres);
             periodo = float(periodo);
-            result = capital*((1+interes)**periodo);
+            result = capital*((1+(tazaInteres/100))**periodo);
             return OperacionesMF.Redondeo(result);
         except ValueError:
             pass;
