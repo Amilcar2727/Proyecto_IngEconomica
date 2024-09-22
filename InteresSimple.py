@@ -121,10 +121,10 @@ class InterfazInteresSimple:
         canvas.get_tk_widget().pack(fill=BOTH, expand=True);
     
     def CalcularInteresSimple(self):
-        resultado = OperacionesMF.InteresAcumulado(self,self.capitalInicTxt.get(),self.tasaTxt.get(),self.periodoTxt.get());
+        resultado = OperacionesMF.InteresSimpleAcumulado(self,self.capitalInicTxt.get(),self.tasaTxt.get(),self.periodoTxt.get());
         return resultado;
     def CalcularCapitalFuturo(self,interesT):
-        resultado = OperacionesMF.CapitalFuturo(self,self.capitalInicTxt.get(),interesT);
+        resultado = OperacionesMF.CapitalSimpleFuturo(self,self.capitalInicTxt.get(),interesT);
         return resultado;
     # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):
