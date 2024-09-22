@@ -1,36 +1,49 @@
+from decimal import Decimal; #Libreria para redondeo
 class OperacionesMF:
-    def InteresSimpleAcumulado(self,capital,tazaInteres,periodo):   
+    @staticmethod
+    def Redondeo(resultado):
+        presicion = Decimal("0.01");
+        return Decimal(resultado).quantize(presicion);
+    
+    @staticmethod
+    def InteresSimpleAcumulado(capital,tazaInteres,periodo):   
         try:
             capital = float(capital);
             tazaInteres = float(tazaInteres);
             periodo = float(periodo);
-            
-            return capital*(tazaInteres/100)*periodo;
+            result = capital*(tazaInteres/100)*periodo;
+            return OperacionesMF.Redondeo(result);
         except ValueError:
             pass;
-        
-    def CapitalSimpleFuturo(self,capital,interes):
+    
+    @staticmethod
+    def CapitalSimpleFuturo(capital,interes):
         try:
             capital = float(capital);
             interes = float(interes);
-            return capital+interes;
+            result = capital+interes;
+            return OperacionesMF.Redondeo(result);
         except ValueError:
             pass;
-        
-    def InteresCompuestoAcumulado(self,capital,tazaInteres,periodo):   
+    
+    @staticmethod
+    def InteresCompuestoAcumulado(capital,tazaInteres,periodo):   
         try:
             capital = float(capital);
             tazaInteres = float(tazaInteres);
             periodo = float(periodo);
-            
-            return capital*(((tazaInteres+1)**periodo)-1);
+            result = capital*((((tazaInteres/100)+1)**periodo)-1);
+            return OperacionesMF.Redondeo(result);
         except ValueError:
             pass;
-        
-    def CapitalCompuestoFuturo(self,capital,interes,periodo):
+    
+    @staticmethod
+    def CapitalCompuestoFuturo(capital,interes,periodo):
         try:
             capital = float(capital);
             interes = float(interes);
-            return capital*((1+interes)**periodo);
+            periodo = float(periodo);
+            result = capital*((1+interes)**periodo);
+            return OperacionesMF.Redondeo(result);
         except ValueError:
             pass;
