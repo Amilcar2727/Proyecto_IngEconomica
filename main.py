@@ -1,6 +1,7 @@
 from tkinter import *;
 from tkinter import ttk;
 from InteresSimple import InterfazInteresSimple;
+from InteresCompuesto import InterfazInteresCompuesto;
 
 class MatematicasFinancieras:
     """
@@ -46,6 +47,12 @@ class MatematicasFinancieras:
             self.root.withdraw();
             # Llamar al Metodo de la otra interfaz
             self.ventanaIS = InterfazInteresSimple(self.root);
+        #Si se selecciona la opcion de Interes C.
+        elif(op == "Interes Compuesto"):
+            # Ocultar la ventana principal
+            self.root.withdraw();
+            # Llamar al Metodo de la otra interfaz
+            self.ventanaIS = InterfazInteresCompuesto(self.root);
     
     # Salir del Programa
     def SalirPrograma(self):
@@ -65,7 +72,7 @@ class MatematicasFinancieras:
         
         #Menu Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-");
-        self.opciones = ['Interes Simple'];
+        self.opciones = ["Interes Simple","Interes Compuesto"];
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox,values=self.opciones);
         self.combobox["state"]="readonly";
         self.combobox.grid(column=2,row=3,padx=5,pady=1,sticky=(E,W));
