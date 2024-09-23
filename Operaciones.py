@@ -37,17 +37,19 @@ class OperacionesMF:
                 tiempo=tiempo/12;
         return OperacionesMF.Redondeo(tiempo,6);
     @staticmethod
+    def Convertir_ComaPunto(valor):
+        return valor.replace(',', '.');
+    @staticmethod
     def InteresSimpleAcumulado(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):   
         try:
-            capital = float(capital);
-            tazaInteres = float(tazaInteres);
+            capital = float(OperacionesMF.Convertir_ComaPunto(capital));
+            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
                 periodo=OperacionesMF.ConversionTiempo(periodo,tazaTiempo,periodoTiempo);
             periodo=float(periodo);
             if(tazaFormato=="porcentaje"):
-                print(periodo);
                 result = capital*(tazaInteres/100)*periodo;
             elif(tazaFormato=="decimal"):
                 result = capital*tazaInteres*periodo;
@@ -58,7 +60,7 @@ class OperacionesMF:
     @staticmethod
     def CapitalSimpleFuturo(capital,interes):
         try:
-            capital = float(capital);
+            capital = float(OperacionesMF.Convertir_ComaPunto(capital));
             interes = float(interes);
             result = capital+interes;
             return OperacionesMF.Redondeo(result,2);
@@ -68,8 +70,8 @@ class OperacionesMF:
     @staticmethod
     def InteresCompuestoAcumulado(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):   
         try:
-            capital = float(capital);
-            tazaInteres = float(tazaInteres);
+            capital = float(OperacionesMF.Convertir_ComaPunto(capital));
+            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
@@ -86,8 +88,8 @@ class OperacionesMF:
     @staticmethod
     def CapitalCompuestoFuturo(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):
         try:
-            capital = float(capital);
-            tazaInteres = float(tazaInteres);
+            capital = float(OperacionesMF.Convertir_ComaPunto(capital));
+            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
