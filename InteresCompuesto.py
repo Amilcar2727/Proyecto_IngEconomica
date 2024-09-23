@@ -12,7 +12,7 @@ class InterfazInteresCompuesto:
     def __init__(self,root):
         self.root = root;
         self.interfazIC = Toplevel();
-        self.interfazIC.geometry("320x300+250+150");
+        self.interfazIC.geometry("320x300+250+25");
         self.interfazIC.title("Calculando Interes Compuesto");
         self.timer_id = None;
         self.datosBlancos = None;
@@ -109,7 +109,7 @@ class InterfazInteresCompuesto:
         #Mostrar Resultado en Pantalla
         ## Frame para la columna derecha (resultados)
         self.resultados_frame = ttk.Frame(self.interfazIC,borderwidth=5,relief="groove",width=210, height=300);
-        self.resultados_frame.grid(column=2, row=0, rowspan=7, padx=(0,10), pady=10, sticky=(N,E,S,W));
+        self.resultados_frame.grid(column=1, row=0, rowspan=7, padx=(0,10), pady=10, sticky=(N,E,S,W));
         self.resultados_frame.grid_propagate(False);
         ##Titulo
         self.tituloResultadosLb = ttk.Label(self.resultados_frame,text="RESULTADOS:",font=("Helvetica",10,"bold"));
@@ -129,6 +129,11 @@ class InterfazInteresCompuesto:
         #Grafico pie
         self.grafico_frame = ttk.Frame(self.resultados_frame);
         self.grafico_frame.grid(column=0, row=5, rowspan=2,pady=10, sticky=(N,E,S,W));
+        #Grafico lineas
+        self.resultados_lineas_frame = ttk.Frame(self.interfazIC,borderwidth=5,relief="groove",width=210, height=350);
+        self.resultados_lineas_frame.grid(column=0, row=7, columnspan=7, padx=10, sticky=(N,E,S,W));
+        self.grafico_lineas_frame = ttk.Frame(self.resultados_lineas_frame);
+        self.grafico_lineas_frame.grid(column=0, row=0, rowspan=3,pady=5, sticky=(N,E,S,W));
     
     #Llamado a las Operaciones
     def CalcularResultados(self):
@@ -150,16 +155,18 @@ class InterfazInteresCompuesto:
             return;
         #Caso contrario
         ##Aumentar tamaño de ventana
-        self.interfazIC.geometry("540x500+250+150");
+        self.interfazIC.geometry("540x700+250+25");
         self.MostrarResultados();
         ##calcular Interes y Capital Futuro
         ##Logica para porcentaje 
-        interesT = self.CalcularInteresCompuesto();
-        capitalFuturo = self.CalcularCapitalFuturo(interesT);
-        self.interesText.set(interesT);
+        self.interesT = self.CalcularInteresCompuesto();
+        capitalFuturo = self.CalcularCapitalFuturo(self.interesT);
+        self.interesText.set(self.interesT);
         self.capitalFText.set(capitalFuturo);
         #Mostrar Grafico
-        self.MostrarGrafico(self.capitalInicTxt.get(),interesT);
+        self.MostrarGrafico(self.capitalInicTxt.get(),self.interesT);
+        #Mostrar Grafico Lineas
+        self.MostrarGraficoLineas();
     
     def MostrarGrafico(self, capitalInicial, interesT):
         # Limpiar el área del gráfico antes de dibujar uno nuevo
@@ -180,6 +187,37 @@ class InterfazInteresCompuesto:
         canvas.draw();
         canvas.get_tk_widget().pack(fill=BOTH, expand=True);
     
+    def MostrarGraficoLineas(self):
+        # Limpiar el área del gráfico antes de dibujar uno nuevo
+        for widget in self.grafico_lineas_frame.winfo_children():
+            widget.destroy();
+        
+        # Inicializando
+        periodo = int(self.periodoTxt.get());
+        # Calcular el interés acumulado en cada año
+        intereses_acumulados = [];
+        anios = [];
+        
+        # Calcular el interés acumulado año a año (puedes ajustar los saltos de años si lo deseas)
+        for anio in range(1, periodo + 1, 2):  # Calcula cada dos años
+            interes_acumulado = OperacionesMF.InteresCompuestoAcumulado(self.capitalInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),anio,self.seleccion_boton_T.get());
+            intereses_acumulados.append(interes_acumulado);
+            anios.append(anio);
+
+        # Crear gráfico de líneas
+        fig, ax = plt.subplots(figsize=(5, 3.5));
+        ax.plot(anios, intereses_acumulados, marker='o', linestyle='-', color='b');
+        
+        # Títulos y etiquetas
+        ax.set_title("Incremento del Interés Compuesto", fontsize=8);
+        ax.set_xlabel(self.seleccion_boton_T.get(), fontsize=8);
+        ax.set_ylabel("Interés Acumulado", fontsize=8);
+        
+        # Mostrar gráfico en Tkinter
+        canvas = FigureCanvasTkAgg(fig, master=self.grafico_lineas_frame);
+        canvas.draw();
+        canvas.get_tk_widget().pack(fill=BOTH, expand=True);
+        
     def CalcularInteresCompuesto(self):
         resultado = OperacionesMF.InteresCompuestoAcumulado(self.capitalInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
         return resultado;
