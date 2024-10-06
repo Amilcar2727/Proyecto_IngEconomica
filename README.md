@@ -15,3 +15,4 @@
 <p>Al dar al boton de Calcular, te sale en la parte derecha los datos calculados con una pequeña gráfica Capital VS Interés cómo tambien Genera un Grafico de Lineas que muestra el incremento en el tiempo del Interés Generado</p>
 <h2>🛠ʚ˚₊Desarrollo</h2>
 <p>En todo el proyecto se usaron las herramientas de VisualCode, Git, Github Desktop, Python y las librerias de Tkinter y MatplotLib </p> 
+<!--PROBANDO -->
