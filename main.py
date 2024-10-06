@@ -2,28 +2,15 @@ from tkinter import *;
 from tkinter import ttk;
 from InteresSimple import InterfazInteresSimple;
 from InteresCompuesto import InterfazInteresCompuesto;
+from Amortizacion import InterfazAmortizacion;
 
 class MatematicasFinancieras:
-    """
-    Valor Presente/Capital (Ci/Co o P)
-    Tasa de Interés (r o i %)
-    Periodo/Tiempo (n)
-    Interés (I) = P*i*n
-    Valor Futuro/Capital Futuro (Cf o F) = P+I
-    """
     #Menu
     #Matematicas Financieras
     #Seleccione el Proceso a realizar:
     #Apartado desglosable ->
     #Seleccionar
     #Salir
-    ### Interés Simple
-    ## -> Ingrese Capital (S./1000 por defecto)
-    ## -> Ingrese Tasa de Interés (0% por defecto)
-    ## -> Ingrese Periodo (1 año por defecto)
-    ## -> Apartado para mostrar Interés Acumulado
-    ## -> Apartado para mostrar Capital Futuro
-    ## -> Apartado para mostrar talvez gráficas
     def __init__(self,root):
         #Titulo de la ventana
         root.title("Matemáticas Financieras");
@@ -53,6 +40,12 @@ class MatematicasFinancieras:
             self.root.withdraw();
             # Llamar al Metodo de la otra interfaz
             self.ventanaIS = InterfazInteresCompuesto(self.root);
+        #Si se selecciona la opcion de Amortización:
+        elif(op == "Amortizacion"):
+            #Ocultar la ventana principal
+            self.root.withdraw();
+            #Llamar al Metodo de la otra interfaz
+            self.ventanaAmort = InterfazAmortizacion(self.root);
     
     # Salir del Programa
     def SalirPrograma(self):
@@ -60,6 +53,11 @@ class MatematicasFinancieras:
         self.root.destroy();
     # Interfaz principal
     def MenuPrincipal(self,root):
+        """
+        TODO: Mejorar interfaz ================================
+        https://tkdocs.com/tutorial/firstexample.html
+        """
+        
         #Grid
         root.columnconfigure([0,1,2,3,4],weight=1);
         root.rowconfigure([0,1,2,3,4],weight=1); 
@@ -72,7 +70,7 @@ class MatematicasFinancieras:
         
         #Menu Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-");
-        self.opciones = ["Interes Simple","Interes Compuesto"];
+        self.opciones = ["Interes Simple","Interes Compuesto","Amortizacion"];
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox,values=self.opciones);
         self.combobox["state"]="readonly";
         self.combobox.grid(column=2,row=3,padx=5,pady=1,sticky=(E,W));
@@ -82,6 +80,8 @@ class MatematicasFinancieras:
         selB.grid(column=1,row=3,padx=10,sticky=(E,W));
         exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma);
         exitB.grid(column=4,row=3,padx=10,sticky=(E,W));
+        #=================================================== 
+        
         #Evento
         root.mainloop();
 

@@ -102,3 +102,40 @@ class OperacionesMF:
             return OperacionesMF.Redondeo(result,2);
         except ValueError:
             pass;
+    
+    # ===== CREAR METODOS PARA AMORTIZACIÓN =====:
+    """TODO: Metodo para calcular Cuota(C):"""
+    @staticmethod
+    def CalcularCuotaAmortizacion():
+        try:
+            #Codigo aqui:
+            return;
+        except ValueError:
+            pass;
+    
+    """TODO: Metodo para calcular Interez(C)"""
+    @staticmethod
+    def InteresAmortizacion():
+        try:
+            #Codigo aqui:
+            return;
+        except ValueError:
+            pass;
+        
+    """TODO: Metodo para calcular Amortizacion(A): Amortizacion = Cuota - interes"""
+    @staticmethod
+    def CalcularAmortizacion():
+        try:
+            #Codigo aqui:
+            return;
+        except ValueError:
+            pass;
+        
+    """TODO: Metodo para calcular Saldo del préstamo(S): Saldo pendiente"""
+    @staticmethod
+    def CalcularSaldoPendiente():
+        try:
+            #Codigo aqui:
+            return;
+        except ValueError:
+            pass;
