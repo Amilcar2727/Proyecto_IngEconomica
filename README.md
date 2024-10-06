@@ -1,6 +1,5 @@
 # 🌟 Proyecto_IngEconomica | Python | Matemáticas Financieras
 <!--TODO: Actualizar la información y agregar imagenes del programa en ejecución-->
-<!--Prueba-->
 <h3>ℹʚ˚₊INFORMACIÓN</h3>
 <p>Proyecto realizado por el grupo Nº6 para el curso de Ingeniería Económica, dictado por la Mg. Ing. Vanessa Maribel Choque Soto, el cual contiene una interfaz sencilla para poder calcular el Interez Simple de un Capital, Interez Compuesto de un Capital, mostrando un gráfico incorporado, cómo tambien acepta Conversiones de Tiempo.</p>
 <h3>🍙ʚ˚₊Integrantes</h3>
