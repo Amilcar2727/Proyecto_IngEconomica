@@ -16,3 +16,4 @@
 <h2>🛠ʚ˚₊Desarrollo</h2>
 <p>En todo el proyecto se usaron las herramientas de VisualCode, Git, Github Desktop, Python y las librerias de Tkinter y MatplotLib </p> 
 <!--PROBANDO -->
+<!--xd-->
