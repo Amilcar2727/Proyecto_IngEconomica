@@ -6,36 +6,36 @@ class OperacionesMF:
         presicion = Decimal(str(numero));#1/10**n
         return Decimal(resultado).quantize(presicion);
     @staticmethod
-    def ConversionTiempo(tiempo,tazaT,periodoT):
+    def ConversionTiempo(tazaInteres,tazaT,periodoT):
         if(tazaT=="Diario"):
             if(periodoT=="Semanal"):
-                tiempo=tiempo*7;
+                tazaInteres*=7;
             elif(periodoT=="Mensual"):
-                tiempo=tiempo*30;
+                tazaInteres*=30;
             elif(periodoT=="Anual"):
-                tiempo=tiempo*365;
+                tazaInteres*=365;
         elif(tazaT=="Semanal"):
             if(periodoT=="Diario"):
-                tiempo=tiempo/7;
+                tazaInteres/=7;
             elif(periodoT=="Mensual"):
-                tiempo=tiempo*4.345;
+                tazaInteres*=4.345;
             elif(periodoT=="Anual"):
-                tiempo=tiempo*52;
+                tazaInteres*=52;
         elif(tazaT=="Mensual"):
             if(periodoT=="Diario"):
-                tiempo=tiempo/30;
+                tazaInteres/=30;
             elif(periodoT=="Semanal"):
-                tiempo=tiempo/4.345;
+                tazaInteres/=4.345;
             elif(periodoT=="Anual"):
-                tiempo=tiempo*12;
+                tazaInteres*=12;
         elif(tazaT=="Anual"):
             if(periodoT=="Diario"):
-                tiempo=tiempo/365;
+                tazaInteres/=365;
             if(periodoT=="Semanal"):
-                tiempo=tiempo/52;
+                tazaInteres/=52;
             elif(periodoT=="Mensual"):
-                tiempo=tiempo/12;
-        return OperacionesMF.Redondeo(tiempo,6);
+                tazaInteres/=12;
+        return float(OperacionesMF.Redondeo(tazaInteres,6));
     @staticmethod
     def Convertir_ComaPunto(valor):
         return valor.replace(',', '.');
@@ -44,15 +44,13 @@ class OperacionesMF:
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
             tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
+            if(tazaFormato=="porcentaje"):
+                tazaInteres = tazaInteres/100;
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
-                periodo=OperacionesMF.ConversionTiempo(periodo,tazaTiempo,periodoTiempo);
-            periodo=float(periodo);
-            if(tazaFormato=="porcentaje"):
-                result = capital*(tazaInteres/100)*periodo;
-            elif(tazaFormato=="decimal"):
-                result = capital*tazaInteres*periodo;
+                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
+            result = capital*tazaInteres*periodo;
             return OperacionesMF.Redondeo(result,2);
         except ValueError:
             pass;
@@ -72,15 +70,13 @@ class OperacionesMF:
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
             tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
+            if(tazaFormato=="porcentaje"):
+                tazaInteres = tazaInteres/100;
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
-                periodo=OperacionesMF.ConversionTiempo(periodo,tazaTiempo,periodoTiempo);
-            periodo=float(periodo);
-            if(tazaFormato=="porcentaje"):
-                result = capital*((((tazaInteres/100)+1)**periodo)-1);
-            elif(tazaFormato=="decimal"):
-                result = capital*((((tazaInteres)+1)**periodo)-1);
+                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
+            result = capital*((((tazaInteres)+1)**periodo)-1);
             return OperacionesMF.Redondeo(result,2);
         except ValueError:
             pass;
@@ -90,15 +86,13 @@ class OperacionesMF:
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
             tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
+            if(tazaFormato=="porcentaje"):
+                tazaInteres = tazaInteres/100;
             periodo = float(periodo);
             #Si el tiempo de la taza es diferente al del periodo
             if(tazaTiempo != periodoTiempo):
-                periodo=OperacionesMF.ConversionTiempo(periodo,tazaTiempo,periodoTiempo);
-            periodo=float(periodo);
-            if(tazaFormato=="porcentaje"):
-                result = capital*((1+(tazaInteres/100))**periodo);
-            elif(tazaFormato=="decimal"):
-                result = capital*((1+(tazaInteres))**periodo);
+                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
+            result = capital*((1+(tazaInteres))**periodo);
             return OperacionesMF.Redondeo(result,2);
         except ValueError:
             pass;
