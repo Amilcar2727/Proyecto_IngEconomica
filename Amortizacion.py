@@ -24,17 +24,17 @@ class InterfazAmortizacion:
         self.datos_frame.grid(column=0, row=0, rowspan=7, pady=10,padx=10, sticky=(N,E,S,W));
         self.datos_frame.grid_propagate(False);
         
-        self.tituloLb = ttk.Label(self.datos_frame, text="CALCULO DE INTERÉS SIMPLE",font=("Helvetica", 12, "bold"));
+        self.tituloLb = ttk.Label(self.datos_frame, text="CALCULO DE AMORTIZACION",font=("Helvetica", 12, "bold"));
         self.tituloLb.grid(column=0,row=0,columnspan=2,padx=5,pady=10,sticky=(N,S,W));
-        self.Check_Capital_wrapper = (self.datos_frame.register(self.Check_Capital),"%P");
+        self.Check_Deuda_wrapper = (self.datos_frame.register(self.Check_Deuda),"%P");
         self.Check_Interes_wrapper = (self.datos_frame.register(self.Check_Interes),"%P");
         self.Check_Periodo_wrapper = (self.datos_frame.register(self.Check_Periodo),"%P");
-        #Lectura Capital
-        self.capitalInicTxt = StringVar();
-        self.capitalLb = ttk.Label(self.datos_frame, text="Capital en Soles (P):");
-        self.capitalLb.grid(column=0,row=1,padx=5,pady=5,sticky=W);
-        self.capital_leer = ttk.Entry(self.datos_frame,textvariable=self.capitalInicTxt,validate="key",validatecommand=self.Check_Capital_wrapper);
-        self.capital_leer.grid(column=1,row=1,padx=5,pady=5,sticky=(W,E));
+        #Lectura Deuda
+        self.DeudaInicTxt = StringVar();
+        self.DeudaLb = ttk.Label(self.datos_frame, text="Deuda en Soles (P):");
+        self.DeudaLb.grid(column=0,row=1,padx=5,pady=5,sticky=W);
+        self.Deuda_leer = ttk.Entry(self.datos_frame,textvariable=self.DeudaInicTxt,validate="key",validatecommand=self.Check_Deuda_wrapper);
+        self.Deuda_leer.grid(column=1,row=1,padx=5,pady=5,sticky=(W,E));
         
         #Lectura Tasa de Interez:
         self.tasaTxt = StringVar();
@@ -77,7 +77,7 @@ class InterfazAmortizacion:
         self.botonT_años = ttk.Radiobutton(self.botonesT_frame, text='Años', variable=self.seleccion_boton_T, value='Anual');
         self.botonT_años.grid(column=3,row=0,padx=5,pady=5,sticky=N);
         
-        #Boton Interés Acumulado y Capital Futuro
+        #Boton Interés Acumulado y Deuda Futuro
         self.resultadosBt = ttk.Button(self.datos_frame, text="Calcular",command=self.CalcularResultados)
         self.resultadosBt.grid(column=0,row=6,padx=5,pady=(30,10),sticky=(S));
         #Boton Volver Menu Principal
@@ -88,7 +88,7 @@ class InterfazAmortizacion:
         self.interfazAmort.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
     
     #Validar solo entrada numerica
-    def Check_Capital(self,newval):
+    def Check_Deuda(self,newval):
         return re.match(r'^[0-9]*[.,]?[0-9]*$', newval) is not None and newval.count('.') <= 1 and newval.count(',') <= 1 and len(newval) <= 12;
     def Check_Interes(self, newval):
         if newval == "":
@@ -114,18 +114,19 @@ class InterfazAmortizacion:
         ##Titulo
         self.tituloResultadosLb = ttk.Label(self.resultados_frame,text="RESULTADOS:",font=("Helvetica",10,"bold"));
         self.tituloResultadosLb.grid(column=0,row=0,padx=5,pady=5,sticky=(W,N))
-        ##Interes
-        self.resulIntLb = ttk.Label(self.resultados_frame,text="Interés Acumulado TOTAL:",font=("Helvetica", 9, "bold"));
+        ##Cuota
+        self.resulIntLb = ttk.Label(self.resultados_frame,text="Deuda Total:",font=("Helvetica", 9, "bold"));
         self.resulIntLb.grid(column=0,row=1,padx=5,pady=5,sticky=(W));
-        self.interesText = StringVar();
-        self.interesLb = ttk.Label(self.resultados_frame,textvariable=self.interesText);
-        self.interesLb.grid(column=0,row=2,padx=5,pady=(0,5),sticky=(W,N));
-        ##Capital Futuro
-        self.resulCapFutLb = ttk.Label(self.resultados_frame,text="Capital Futuro TOTAL:",font=("Helvetica", 9, "bold"));
-        self.resulCapFutLb.grid(column=0,row=3,padx=5,pady=5,sticky=(W));
-        self.capitalFText = StringVar();
-        self.capitalFLb = ttk.Label(self.resultados_frame,textvariable=self.capitalFText);
-        self.capitalFLb.grid(column=0,row=4,padx=5,sticky=(W,N));
+        self.deudaTotalText = StringVar();
+        self.deudaLb = ttk.Label(self.resultados_frame,textvariable=self.deudaTotalText);
+        self.deudaLb.grid(column=0,row=2,padx=5,pady=(0,5),sticky=(W,N));
+        ##Deuda Futuro
+        self.resulCuota = ttk.Label(self.resultados_frame,text="Cuota RECOMENDADA:",font=("Helvetica", 9, "bold"));
+        self.resulCuota.grid(column=0,row=3,padx=5,pady=5,sticky=(W));
+        self.cuotaText = StringVar();
+        self.cuotaLB = ttk.Label(self.resultados_frame,textvariable=self.cuotaText);
+        self.cuotaLB.grid(column=0,row=4,padx=5,sticky=(W,N));
+        """
         #Grafico pie
         self.grafico_frame = ttk.Frame(self.resultados_frame);
         self.grafico_frame.grid(column=0, row=5, rowspan=2,pady=10, sticky=(N,E,S,W));
@@ -135,11 +136,13 @@ class InterfazAmortizacion:
         self.resultados_lineas_frame.grid(column=0, row=7, columnspan=7, padx=10, sticky=(N,E,S,W));
         self.grafico_lineas_frame = ttk.Frame(self.resultados_lineas_frame);
         self.grafico_lineas_frame.grid(column=0, row=0, rowspan=3,pady=5, sticky=(N,E,S,W));
-    
+        """
     #Llamado a las Operaciones
     def CalcularResultados(self):
+        #ELiminamos graficos anteriores
+        plt.close('all');
         #Si se da textos en blancos o vacios
-        if((self.capitalInicTxt.get()=="" or self.capitalInicTxt == None) or
+        if((self.DeudaInicTxt.get()=="" or self.DeudaInicTxt == None) or
            (self.tasaTxt.get()=="" or self.tasaTxt == None) or
            (self.tasaTxtComboBox.get()=="--" or self.tasaTxtComboBox==None) or 
            (self.periodoTxt.get()=="" or self.periodoTxt == None) or
@@ -159,29 +162,29 @@ class InterfazAmortizacion:
         self.interfazAmort.geometry("540x700+250+25");
         self.MostrarResultados();
         
-        ##calcular Interes y Capital Futuro
-        ##Logica para porcentaje 
-        interesT = self.CalcularInteresSimple();
-        capitalFuturo = self.CalcularCapitalFuturo(interesT);
-        self.interesText.set(interesT);
-        self.capitalFText.set(capitalFuturo);
+        ##calcular Interes y Deuda Futuro
+        deudaT = self.CalcularDeudaTotal();
+        cuotaPago = self.CalcularCuota(deudaT);
+        self.deudaTotalText.set(deudaT);
+        self.cuotaText.set(cuotaPago);
         #Mostrar Grafico
-        self.MostrarGrafico(self.capitalInicTxt.get(),interesT);
+        """
+        self.MostrarGrafico(self.DeudaInicTxt.get(),deudaT);
         #Mostrar Grafico Lineas
         self.MostrarGraficoLineas();
-    
-    def MostrarGrafico(self, capitalInicial, interesT):
+        """
+    def MostrarGrafico(self, DeudaInicial, deudaT):
         # Limpiar el área del gráfico antes de dibujar uno nuevo
         for widget in self.grafico_frame.winfo_children():
             widget.destroy();
         
         # Datos para el gráfico
         etiquetas = ['C', 'I'];
-        valores = [float(OperacionesMF.Convertir_ComaPunto(capitalInicial)), float(interesT)];
+        valores = [float(OperacionesMF.Convertir_ComaPunto(DeudaInicial)), float(deudaT)];
         
         # Crear gráfico de pie
         fig, ax = plt.subplots(figsize=(2,1.5)); #Escala del grafico
-        ax.set_title("Capital Inicial (C) VS Interés (I)").set_fontsize(7);
+        ax.set_title("Deuda Inicial (C) VS Interés (I)").set_fontsize(7);
         ax.pie(valores, labels=etiquetas, autopct='%1.1f%%', startangle=90,textprops={"fontsize":8});
         ax.axis('equal')  # Verificar grafico es circulo cerrado.
         # Mostrar gráfico en Tkinter
@@ -195,7 +198,7 @@ class InterfazAmortizacion:
             widget.destroy();
         
         # Convertir los valores ingresados
-        capital_inicial = float(OperacionesMF.Convertir_ComaPunto(self.capitalInicTxt.get()));
+        Deuda_inicial = float(OperacionesMF.Convertir_ComaPunto(self.DeudaInicTxt.get()));
         tasa_interes = float(OperacionesMF.Convertir_ComaPunto(self.tasaTxt.get())) / 100;
         periodo = int(self.periodoTxt.get());
         
@@ -205,7 +208,7 @@ class InterfazAmortizacion:
         
         # Calcular el interés acumulado año a año (puedes ajustar los saltos de años si lo deseas)
         for anio in range(1, periodo + 1, 2):  # Calcula cada dos años
-            interes_acumulado = capital_inicial * tasa_interes * anio;
+            interes_acumulado = Deuda_inicial * tasa_interes * anio;
             intereses_acumulados.append(interes_acumulado);
             anios.append(anio);
 
@@ -223,11 +226,11 @@ class InterfazAmortizacion:
         canvas.draw();
         canvas.get_tk_widget().pack(fill=BOTH, expand=True);
     
-    def CalcularInteresSimple(self):
-        resultado = OperacionesMF.InteresSimpleAcumulado(self.capitalInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
+    def CalcularDeudaTotal(self):
+        resultado = OperacionesMF.InteresAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
         return resultado;
-    def CalcularCapitalFuturo(self,interesT):
-        resultado = OperacionesMF.CapitalSimpleFuturo(self.capitalInicTxt.get(),interesT);
+    def CalcularCuota(self):
+        resultado = OperacionesMF.CalcularCuotaAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
         return resultado;
     # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):
