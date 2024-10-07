@@ -16,6 +16,7 @@ class MatematicasFinancieras:
         root.title("Matemáticas Financieras");
         #Root principal
         self.root = root;
+        self.timer_id = None;
         #Llamada a la interfaz Principal
         self.MenuPrincipal(root);
     
@@ -27,7 +28,7 @@ class MatematicasFinancieras:
             #Arrojar un pequeño error
             opIncorrecta = ttk.Label(self.root, text="Por favor, selecciona una opción valida",font=("Helvetica", 7, "bold"),foreground="red");
             opIncorrecta.grid(column=2,row=4,columnspan=2,sticky=(N,W));
-            self.root.after(5000,opIncorrecta.destroy);
+            self.timer_id = self.root.after(5000,opIncorrecta.destroy);
         #Si se selecciona la opcion de Interes S.
         elif(op == "Interes Simple"):
             # Ocultar la ventana principal
@@ -51,6 +52,12 @@ class MatematicasFinancieras:
     def SalirPrograma(self):
         # Destruye el root principal
         self.root.destroy();
+    # Operaciones de apoyo para evitar bugs
+    def Cerrado_manual(self):
+        if self.timer_id is not None:
+            self.root.after_cancel(self.timer_id);
+        self.root.destroy();
+        print("El programa se ha cerrado correctamente.");
     # Interfaz principal
     def MenuPrincipal(self,root):
         """
@@ -81,7 +88,8 @@ class MatematicasFinancieras:
         exitB = ttk.Button(root, text="Salir",command=self.SalirPrograma);
         exitB.grid(column=4,row=3,padx=10,sticky=(E,W));
         #=================================================== 
-        
+        #Evitar bugs y cerrando timers antes de un cerrado por el usuario
+        self.root.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
         #Evento
         root.mainloop();
 
