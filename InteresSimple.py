@@ -138,6 +138,8 @@ class InterfazInteresSimple:
     
     #Llamado a las Operaciones
     def CalcularResultados(self):
+        #ELiminamos graficos anteriores
+        plt.close('all');
         #Si se da textos en blancos o vacios
         if((self.capitalInicTxt.get()=="" or self.capitalInicTxt == None) or
            (self.tasaTxt.get()=="" or self.tasaTxt == None) or
