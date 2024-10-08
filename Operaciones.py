@@ -116,7 +116,7 @@ class OperacionesMF:
             num = Deuda * tasaInteres * ((1+tasaInteres)**periodo);
             dem = (((1+tasaInteres)**periodo) - 1);
             cuota = num/dem;
-            return float(OperacionesMF.Redondeo(cuota,2));
+            return float(tasaInteres),float(OperacionesMF.Redondeo(cuota,2));
         except ValueError:
             pass;
     
@@ -150,10 +150,10 @@ class OperacionesMF:
         
     """TODO: Metodo para calcular Saldo del préstamo(S): Saldo pendiente"""
     @staticmethod
-    def AmortizacionSaldoPendiente(saldoRestanteAnt, amortizacion):
+    def AmortizacionTabla_SaldoPendiente(saldoRestanteAnt, amortizacion):
         try:
             #Codigo aqui:
-            result = float(saldoRestanteAnt)-float(amortizacion);
+            result = float(saldoRestanteAnt) - float(amortizacion);
             return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;

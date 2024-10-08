@@ -159,39 +159,125 @@ class InterfazAmortizacion:
             return;
         #Caso contrario
         ##Aumentar tamaño de ventana
-        self.interfazAmort.geometry("540x700+250+25");
+        self.interfazAmort.geometry("540x570+250+25");
         self.MostrarResultados();
         
-        ##calcular Interes y Deuda Futuro
-        cuotaPago = self.CalcularCuota();
+        #Mostrar Grafico Lineas
+        self.MostrarGraficoLineas();
+        ##calcular Cuota y Deuda Futuro
+        nuevaTasaInteres,cuotaPago = self.CalcularCuota();
         deudaT = self.CalcularDeudaTotal(cuotaPago);
         self.deudaTotalText.set(deudaT);
         self.cuotaText.set(cuotaPago);
-        #Mostrar Grafico
-        """
-        self.MostrarGrafico(self.DeudaInicTxt.get(),deudaT);
-        #Mostrar Grafico Lineas
-        self.MostrarGraficoLineas();
-        """
-    def MostrarGrafico(self, DeudaInicial, deudaT):
+        #Mostrar Tablas
+        datos_amortizacion = self.GenerarDatosAmortizacion(cuotaPago,nuevaTasaInteres);
+        self.CrearTablaAmortizacion(datos_amortizacion);
+    def MostrarGraficoLineas(self):
         # Limpiar el área del gráfico antes de dibujar uno nuevo
-        for widget in self.grafico_frame.winfo_children():
+        for widget in self.grafico_lineas_frame.winfo_children():
             widget.destroy();
         
-        # Datos para el gráfico
-        etiquetas = ['C', 'I'];
-        valores = [float(OperacionesMF.Convertir_ComaPunto(DeudaInicial)), float(deudaT)];
+        # Convertir los valores ingresados
+        capital_inicial = float(OperacionesMF.Convertir_ComaPunto(self.capitalInicTxt.get()));
+        tasa_interes = float(OperacionesMF.Convertir_ComaPunto(self.tasaTxt.get())) / 100;
+        periodo = int(self.periodoTxt.get());
         
-        # Crear gráfico de pie
-        fig, ax = plt.subplots(figsize=(2,1.5)); #Escala del grafico
-        ax.set_title("Deuda Inicial (C) VS Interés (I)").set_fontsize(7);
-        ax.pie(valores, labels=etiquetas, autopct='%1.1f%%', startangle=90,textprops={"fontsize":8});
-        ax.axis('equal')  # Verificar grafico es circulo cerrado.
+        # Calcular el interés acumulado en cada año
+        intereses_acumulados = [];
+        anios = [];
+        
+        # Calcular el interés acumulado año a año (puedes ajustar los saltos de años si lo deseas)
+        for anio in range(1, periodo + 1, 2):  # Calcula cada dos años
+            interes_acumulado = capital_inicial * tasa_interes * anio;
+            intereses_acumulados.append(interes_acumulado);
+            anios.append(anio);
+
+        # Crear gráfico de líneas
+        fig, ax = plt.subplots(figsize=(5, 3.5));
+        ax.plot(anios, intereses_acumulados, marker='o', linestyle='-', color='b');
+        
+        # Títulos y etiquetas
+        ax.set_title("Incremento del Interés Simple", fontsize=8);
+        ax.set_xlabel(self.seleccion_boton_T.get(), fontsize=8);
+        ax.set_ylabel("Interés Acumulado", fontsize=8);
+        
         # Mostrar gráfico en Tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.grafico_frame);
+        canvas = FigureCanvasTkAgg(fig, master=self.grafico_lineas_frame);
         canvas.draw();
         canvas.get_tk_widget().pack(fill=BOTH, expand=True);
+    def CrearTablaAmortizacion(self,datos):
+        # Crear un frame
+        self.tabla_frame = ttk.Frame(self.interfazAmort);
+        self.tabla_frame.grid(column=0,row=7,columnspan=7,padx=10,pady=(0,5),sticky=(N,E,S,W));
+        # Configurar la columna y fila para que se expandan
+        self.tabla_frame.columnconfigure(0, weight=1);
+        self.tabla_frame.rowconfigure(0, weight=1);
         
+        # Crear el TreeView
+        self.tabla = ttk.Treeview(self.tabla_frame, columns=("Fecha", "Cuota", "Interes", "Amortizacion", "Saldo Restante"), show='headings');
+        
+        # Definimos columnas
+        formato_periodo = self.seleccion_boton_T.get();
+        if formato_periodo == "Anual":
+            formato_periodo = "Año";
+        elif formato_periodo == "Mensual":
+            formato_periodo = "Mes";
+        elif formato_periodo == "Semanal":
+            formato_periodo = "Semana";
+        elif formato_periodo == "Diario":
+            formato_periodo = "Dia";
+        self.tabla.heading("Fecha",text=formato_periodo);
+        self.tabla.heading("Cuota",text="Cuota");
+        self.tabla.heading("Interes",text="Interes");
+        self.tabla.heading("Amortizacion",text="Amortizacion");
+        self.tabla.heading("Saldo Restante",text="Saldo Restante");
+        
+        # Configurar el ancho de las columnas
+        self.tabla.column("Fecha",width=50,anchor="center");
+        self.tabla.column("Cuota",width=100,anchor="e");
+        self.tabla.column("Interes",width=100,anchor="e");
+        self.tabla.column("Amortizacion",width=100,anchor="e");
+        self.tabla.column("Saldo Restante",width=100,anchor="e");
+        
+        #Scrollbar
+        self.scrollbar = ttk.Scrollbar(self.tabla_frame, orient="vertical",command=self.tabla.yview);
+        self.tabla.configure(yscrollcommand=self.scrollbar.set);
+        
+        #Ubicar el Treeview y la barra de desplazamiento en el frame
+        self.tabla.grid(column=0,row=0,sticky=(N,E,S,W));
+        self.scrollbar.grid(column=1,row=0,sticky=(N,S));
+        
+        #Insertar Datos
+        for fila in datos:
+            self.tabla.insert("","end",values=fila);
+    
+    def GenerarDatosAmortizacion(self,cuota,nuevaTasaInteres):
+        deuda_inicial = float(OperacionesMF.Convertir_ComaPunto(self.DeudaInicTxt.get()));
+        periodo = int(self.periodoTxt.get());
+        tasa_interes = nuevaTasaInteres;
+        datos = [];
+        saldo_inicial = deuda_inicial;
+        flag = False;
+        for tiempo in range(1,periodo+1):
+            interes = OperacionesMF.AmortizacionTabla_Interes(saldo_inicial,tasa_interes);
+            amortizacion = OperacionesMF.AmortizacionTabla_Amortizacion(cuota,interes);
+            saldo_restante = OperacionesMF.AmortizacionTabla_SaldoPendiente(saldo_inicial,amortizacion);
+            if saldo_restante < amortizacion:
+                cuota += saldo_inicial;
+                amortizacion = OperacionesMF.AmortizacionTabla_Amortizacion(cuota,tasa_interes);
+                flag = True;
+            datos.append([
+                tiempo,
+                f"{cuota:.2f}",
+                f"{interes:.2f}",
+                f"{amortizacion:.2f}",
+                f"{saldo_restante:.2f}"
+            ]);
+            saldo_inicial = saldo_restante;
+            if flag == True:
+                return datos;
+        return datos;
+    
     def CalcularDeudaTotal(self,cuota):
         resultado = OperacionesMF.PagoTotalAmortizacion(cuota,self.periodoTxt.get());
         return resultado;
