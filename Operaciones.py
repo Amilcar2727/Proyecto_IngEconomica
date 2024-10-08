@@ -6,52 +6,53 @@ class OperacionesMF:
         presicion = Decimal(str(numero));#1/10**n
         return Decimal(resultado).quantize(presicion);
     @staticmethod
-    def ConversionTiempo(tazaInteres,tazaT,periodoT):
-        if(tazaT=="Diario"):
+    def ConversionTiempo(tasaInteres,tasaT,periodoT):
+        if(tasaT=="Diario"):
             if(periodoT=="Semanal"):
-                tazaInteres*=7;
+                tasaInteres*=7;
             elif(periodoT=="Mensual"):
-                tazaInteres*=30;
+                tasaInteres*=30;
             elif(periodoT=="Anual"):
-                tazaInteres*=365;
-        elif(tazaT=="Semanal"):
+                tasaInteres*=365;
+        elif(tasaT=="Semanal"):
             if(periodoT=="Diario"):
-                tazaInteres/=7;
+                tasaInteres/=7;
             elif(periodoT=="Mensual"):
-                tazaInteres*=4.345;
+                tasaInteres*=4.345;
             elif(periodoT=="Anual"):
-                tazaInteres*=52;
-        elif(tazaT=="Mensual"):
+                tasaInteres*=52;
+        elif(tasaT=="Mensual"):
             if(periodoT=="Diario"):
-                tazaInteres/=30;
+                tasaInteres/=30;
             elif(periodoT=="Semanal"):
-                tazaInteres/=4.345;
+                tasaInteres/=4.345;
             elif(periodoT=="Anual"):
-                tazaInteres*=12;
-        elif(tazaT=="Anual"):
+                tasaInteres*=12;
+        elif(tasaT=="Anual"):
             if(periodoT=="Diario"):
-                tazaInteres/=365;
+                tasaInteres/=365;
             if(periodoT=="Semanal"):
-                tazaInteres/=52;
+                tasaInteres/=52;
             elif(periodoT=="Mensual"):
-                tazaInteres/=12;
-        return float(OperacionesMF.Redondeo(tazaInteres,6));
+                tasaInteres/=12;
+        result = float(OperacionesMF.Redondeo(tasaInteres,6));
+        return result;
     @staticmethod
     def Convertir_ComaPunto(valor):
         return valor.replace(',', '.');
     @staticmethod
-    def InteresSimpleAcumulado(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):   
+    def InteresSimpleAcumulado(capital,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
-            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
-            if(tazaFormato=="porcentaje"):
-                tazaInteres = tazaInteres/100;
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(tasaInteres));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
             periodo = float(periodo);
-            #Si el tiempo de la taza es diferente al del periodo
-            if(tazaTiempo != periodoTiempo):
-                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
-            result = capital*tazaInteres*periodo;
-            return OperacionesMF.Redondeo(result,2);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            result = capital*tasaInteres*periodo;
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
     
@@ -61,75 +62,98 @@ class OperacionesMF:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
             interes = float(interes);
             result = capital+interes;
-            return OperacionesMF.Redondeo(result,2);
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
     
     @staticmethod
-    def InteresCompuestoAcumulado(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):   
+    def InteresCompuestoAcumulado(capital,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):   
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
-            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
-            if(tazaFormato=="porcentaje"):
-                tazaInteres = tazaInteres/100;
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(tasaInteres));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
             periodo = float(periodo);
-            #Si el tiempo de la taza es diferente al del periodo
-            if(tazaTiempo != periodoTiempo):
-                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
-            result = capital*((((tazaInteres)+1)**periodo)-1);
-            return OperacionesMF.Redondeo(result,2);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            result = capital*((((tasaInteres)+1)**periodo)-1);
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
     
     @staticmethod
-    def CapitalCompuestoFuturo(capital,tazaInteres,tazaTiempo,tazaFormato,periodo,periodoTiempo):
+    def CapitalCompuestoFuturo(capital,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
         try:
             capital = float(OperacionesMF.Convertir_ComaPunto(capital));
-            tazaInteres = float(OperacionesMF.Convertir_ComaPunto(tazaInteres));
-            if(tazaFormato=="porcentaje"):
-                tazaInteres = tazaInteres/100;
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(tasaInteres));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
             periodo = float(periodo);
-            #Si el tiempo de la taza es diferente al del periodo
-            if(tazaTiempo != periodoTiempo):
-                tazaInteres=OperacionesMF.ConversionTiempo(tazaInteres,tazaTiempo,periodoTiempo);
-            result = capital*((1+(tazaInteres))**periodo);
-            return OperacionesMF.Redondeo(result,2);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            result = capital*((1+(tasaInteres))**periodo);
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
     
-    # ===== CREAR METODOS PARA AMORTIZACIÓN =====:
-    """TODO: Metodo para calcular Cuota(C):"""
+    # ===== METODOS PARA AMORTIZACIÓN =====:
+    """Metodo para calcular Cuota(C):"""
     @staticmethod
-    def CalcularCuotaAmortizacion():
+    def CalcularCuotaAmortizacion(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
         try:
             #Codigo aqui:
-            return;
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(Deuda));
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(tasaInteres));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
+            periodo = float(periodo);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            #Calcular la cuota
+            num = Deuda * tasaInteres * ((1+tasaInteres)**periodo);
+            dem = (((1+tasaInteres)**periodo) - 1);
+            cuota = num/dem;
+            return float(OperacionesMF.Redondeo(cuota,2));
         except ValueError:
             pass;
     
-    """TODO: Metodo para calcular Interez(C)"""
+    """Metodo para calcular Pago Total generado por las Cuotas"""
     @staticmethod
-    def InteresAmortizacion():
+    def PagoTotalAmortizacion(cuota,periodo):
         try:
             #Codigo aqui:
-            return;
+            pagoT = float(cuota)*float(periodo);
+            return float(OperacionesMF.Redondeo(pagoT,2));
         except ValueError:
             pass;
-        
-    """TODO: Metodo para calcular Amortizacion(A): Amortizacion = Cuota - interes"""
+    
+    """Metodo para calcular el Interés en la tabla"""
     @staticmethod
-    def CalcularAmortizacion():
+    def AmortizacionTabla_Interes(saldoRestanteAnt, tasa):
+        try:
+            result = float(saldoRestanteAnt) * float(tasa);
+            return float(OperacionesMF.Redondeo(result,2));
+        except ValueError:
+            pass;
+    """Metodo para calcular Amortizacion(A): Amortizacion = Cuota - interes"""
+    @staticmethod
+    def AmortizacionTabla_Amortizacion(cuota,interes):
         try:
             #Codigo aqui:
-            return;
+            result = float(cuota) - float(interes);
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
         
     """TODO: Metodo para calcular Saldo del préstamo(S): Saldo pendiente"""
     @staticmethod
-    def CalcularSaldoPendiente():
+    def AmortizacionSaldoPendiente(saldoRestanteAnt, amortizacion):
         try:
             #Codigo aqui:
-            return;
+            result = float(saldoRestanteAnt)-float(amortizacion);
+            return float(OperacionesMF.Redondeo(result,2));
         except ValueError:
             pass;
