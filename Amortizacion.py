@@ -163,8 +163,8 @@ class InterfazAmortizacion:
         self.MostrarResultados();
         
         ##calcular Interes y Deuda Futuro
-        deudaT = self.CalcularDeudaTotal();
-        cuotaPago = self.CalcularCuota(deudaT);
+        cuotaPago = self.CalcularCuota();
+        deudaT = self.CalcularDeudaTotal(cuotaPago);
         self.deudaTotalText.set(deudaT);
         self.cuotaText.set(cuotaPago);
         #Mostrar Grafico
@@ -192,46 +192,14 @@ class InterfazAmortizacion:
         canvas.draw();
         canvas.get_tk_widget().pack(fill=BOTH, expand=True);
         
-    def MostrarGraficoLineas(self):
-        # Limpiar el área del gráfico antes de dibujar uno nuevo
-        for widget in self.grafico_lineas_frame.winfo_children():
-            widget.destroy();
-        
-        # Convertir los valores ingresados
-        Deuda_inicial = float(OperacionesMF.Convertir_ComaPunto(self.DeudaInicTxt.get()));
-        tasa_interes = float(OperacionesMF.Convertir_ComaPunto(self.tasaTxt.get())) / 100;
-        periodo = int(self.periodoTxt.get());
-        
-        # Calcular el interés acumulado en cada año
-        intereses_acumulados = [];
-        anios = [];
-        
-        # Calcular el interés acumulado año a año (puedes ajustar los saltos de años si lo deseas)
-        for anio in range(1, periodo + 1, 2):  # Calcula cada dos años
-            interes_acumulado = Deuda_inicial * tasa_interes * anio;
-            intereses_acumulados.append(interes_acumulado);
-            anios.append(anio);
-
-        # Crear gráfico de líneas
-        fig, ax = plt.subplots(figsize=(5, 3.5));
-        ax.plot(anios, intereses_acumulados, marker='o', linestyle='-', color='b');
-        
-        # Títulos y etiquetas
-        ax.set_title("Incremento del Interés Simple", fontsize=8);
-        ax.set_xlabel(self.seleccion_boton_T.get(), fontsize=8);
-        ax.set_ylabel("Interés Acumulado", fontsize=8);
-        
-        # Mostrar gráfico en Tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.grafico_lineas_frame);
-        canvas.draw();
-        canvas.get_tk_widget().pack(fill=BOTH, expand=True);
-    
-    def CalcularDeudaTotal(self):
-        resultado = OperacionesMF.InteresAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
+    def CalcularDeudaTotal(self,cuota):
+        resultado = OperacionesMF.PagoTotalAmortizacion(cuota,self.periodoTxt.get());
         return resultado;
     def CalcularCuota(self):
         resultado = OperacionesMF.CalcularCuotaAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
         return resultado;
+    # Metodos para la tabla
+    
     # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):
         if self.timer_id is not None:
