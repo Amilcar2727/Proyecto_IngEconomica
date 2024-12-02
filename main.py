@@ -1,10 +1,12 @@
-from tkinter import *
-from tkinter import ttk
-from InteresSimple import InterfazInteresSimple
-from InteresCompuesto import InterfazInteresCompuesto
-from Amortizacion import InterfazAmortizacion
-from GradienteAritmetico import InterfazGradienteAritmetico
-from GradienteGeometrico import InterfazGradienteGeometrico
+from tkinter import *;
+from tkinter import ttk;
+from InteresSimple import InterfazInteresSimple;
+from InteresCompuesto import InterfazInteresCompuesto;
+from Amortizacion import InterfazAmortizacion;
+from Anualidad import InterfazAnualidadVencida;
+from Gradiente import InterfazGradienteAritmetico;
+from Depreciacion import InterfazDepreciacion;
+from VAN import InterfazVAN;
 
 class MatematicasFinancieras:
     def __init__(self, root):
@@ -41,16 +43,26 @@ class MatematicasFinancieras:
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
             self.ventanaAmort = InterfazAmortizacion(self.root)
+        elif op == "Anualidad Vencida":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaAV = InterfazAnualidadVencida(self.root)
         elif op == "Gradiente Aritmético":
             # Ocultar la ventana principal
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
             self.ventanaGA = InterfazGradienteAritmetico(self.root)
-        elif op == "Gradiente Geométrico":
+        elif op == "Depreciacion Linea Recta":
             # Ocultar la ventana principal
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
-            self.ventanaGG = InterfazGradienteGeometrico(self.root)
+            self.ventanaDL = InterfazDepreciacion(self.root)
+        elif op == "VAN":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaVAN = InterfazVAN(self.root)
 
     # Salir del Programa
     def SalirPrograma(self):
@@ -83,8 +95,7 @@ class MatematicasFinancieras:
 
         # Menú Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-")
-        self.opciones = ["Interes Simple", "Interes Compuesto", "Amortizacion",
-                         "Gradiente Aritmético", "Gradiente Geométrico"]
+        self.opciones = ["Interes Simple", "Interes Compuesto", "Amortizacion","Anualidad Vencida","Gradiente Aritmético", "Depreciacion Linea Recta","VAN"]
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox, values=self.opciones)
         self.combobox["state"] = "readonly"
         self.combobox.grid(column=2, row=3, padx=5, pady=1, sticky=(E, W))

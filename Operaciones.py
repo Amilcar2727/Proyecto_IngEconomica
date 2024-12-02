@@ -179,3 +179,15 @@ class OperacionesMF:
             return float(OperacionesMF.Redondeo(deudaAct,2));
         except ValueError:
             pass;
+    ### ============== CALCULAR DEPRECIACION LINEA RECTA ============= ###
+    @staticmethod
+    def DepreciacionLR(costoActivoFijo,valorDeRescate,periodo):
+        try:
+            costoAF = float(OperacionesMF.Convertir_ComaPunto(costoActivoFijo));
+            valorR = float(OperacionesMF.Convertir_ComaPunto(valorDeRescate));
+            periodo = float(periodo);
+            #Calcular Depreciacion
+            depreciacion = (costoAF-valorR)/periodo;
+            return float(OperacionesMF.Redondeo(depreciacion,2));
+        except ValueError:
+            pass;
