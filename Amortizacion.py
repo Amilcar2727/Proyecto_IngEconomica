@@ -77,13 +77,18 @@ class InterfazAmortizacion:
         self.botonT_años = ttk.Radiobutton(self.botonesT_frame, text='Años', variable=self.seleccion_boton_T, value='Anual');
         self.botonT_años.grid(column=3,row=0,padx=5,pady=5,sticky=N);
         
-        #Boton Interés Acumulado y Deuda Futuro
+        #Metodo para amortizacion
+        self.textoComboBox = StringVar(value="Sistema Frances");
+        self.opcionesSistema = ["Sistema Americano","Sistema Frances","Sistema Aleman"];
+        self.comboboxS = ttk.Combobox(self.datos_frame, textvariable=self.textoComboBox,values=self.opcionesSistema);
+        self.comboboxS["state"]="readonly";
+        self.comboboxS.grid(column=0,row=6,columnspan=2,pady=1,sticky=(N,S));
+        #Boton Calcular
         self.resultadosBt = ttk.Button(self.datos_frame, text="Calcular",command=self.CalcularResultados)
-        self.resultadosBt.grid(column=0,row=6,padx=5,pady=(30,10),sticky=(S));
+        self.resultadosBt.grid(column=0,row=7,padx=5,pady=(30,10),sticky=(S));
         #Boton Volver Menu Principal
         self.volverMenuBt = ttk.Button(self.datos_frame, text="Volver Menu",command=self.VolverMenu)
-        self.volverMenuBt.grid(column=1,row=6,padx=5,pady=(30,10),sticky=(S));
-        
+        self.volverMenuBt.grid(column=1,row=7,padx=5,pady=(30,10),sticky=(S));
         #Evitar bugs y cerrando timers antes de un cerrado por el usuario
         self.interfazAmort.protocol("WM_DELETE_WINDOW",self.Cerrado_manual);
     
@@ -126,11 +131,8 @@ class InterfazAmortizacion:
         self.cuotaText = StringVar();
         self.cuotaLB = ttk.Label(self.resultados_frame,textvariable=self.cuotaText);
         self.cuotaLB.grid(column=0,row=4,padx=5,sticky=(W,N));
-        """
-        #Grafico pie
-        self.grafico_frame = ttk.Frame(self.resultados_frame);
-        self.grafico_frame.grid(column=0, row=5, rowspan=2,pady=10, sticky=(N,E,S,W));
-        """
+        
+        
         self.resultados_lineas_frame = ttk.Frame(self.resultados_frame,width=210, height=350);
         self.resultados_lineas_frame.grid(column=0, row=5, columnspan=3,padx=1, sticky=(N,E,S,W));
         self.resultados_lineas_frame.grid_propagate(False);
@@ -164,49 +166,59 @@ class InterfazAmortizacion:
         self.MostrarResultados();
         
         #Mostrar Grafico Lineas
-        self.MostrarGraficoLineas();
+        #self.MostrarGraficoLineas();
+        #Obtener el sistema de amortizacion
+        op = self.comboboxS.get();
+        if op == "Sistema Frances":
+            pass;
+        elif op == "Sistema Aleman":
+            pass;
+        elif op == "Sistema Americano":
+            pass;
         ##calcular Cuota y Deuda Futuro
-        nuevaTasaInteres,cuotaPago = self.CalcularCuota();
+        cuotaPago = self.CalcularCuota(op);
         deudaT = self.CalcularDeudaTotal(cuotaPago);
         self.deudaTotalText.set(deudaT);
         self.cuotaText.set(cuotaPago);
+        
         #Mostrar Tablas
-        datos_amortizacion = self.GenerarDatosAmortizacion(cuotaPago,nuevaTasaInteres);
-        self.CrearTablaAmortizacion(datos_amortizacion);
+        #datos_amortizacion = self.GenerarDatosAmortizacion(cuotaPago);
+        #self.CrearTablaAmortizacion(datos_amortizacion);
         
     def MostrarGraficoLineas(self):
         # Limpiar el área del gráfico antes de dibujar uno nuevo
         for widget in self.grafico_lineas_frame.winfo_children():
             widget.destroy();
         
-        # Convertir los valores ingresados
-        deuda_inicial = float(OperacionesMF.Convertir_ComaPunto(self.DeudaInicTxt.get()));
-        tasa_interes = float(OperacionesMF.Convertir_ComaPunto(self.tasaTxt.get())) / 100;
-        periodo = int(self.periodoTxt.get());
-        
-        # Calcular el interés acumulado en cada año
-        deudas = [];
-        anios = [];
-        
-        # Calcular el interés acumulado año a año (puedes ajustar los saltos de años si lo deseas)
-        for anio in range(1, periodo - 1, 2):  # Calcula cada dos años
-            deuda = OperacionesMF.AmortizacionGrafica_DeudaActual(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),anio,self.seleccion_boton_T.get());
-            deudas.append(float(self.DeudaInicTxt.get()) - deuda);
-            anios.append(anio);
+        if self.textoComboBox.get() == "Sistema Frances":
+            deuda_inicial = float(self.DeudaInicTxt.get())
+            tasa_interes = float(self.tasaTxt.get()) / 100 if self.seleccion_boton_I.get() == "porcentaje" else float(self.tasaTxt.get())
+            n_periodos = int(self.periodoTxt.get())
 
-        # Crear gráfico de líneas
-        fig, ax = plt.subplots(figsize=(2.1, 1.5));
-        ax.plot(anios, deudas, marker='o', linestyle='-', color='b');
-        
-        # Títulos y etiquetas
-        ax.set_title("Desarrollo de la Deuda", fontsize=8);
-        ax.set_xlabel(self.seleccion_boton_T.get(), fontsize=4);
-        ax.set_ylabel("Deuda", fontsize=3);
-        
-        # Mostrar gráfico en Tkinter
-        canvas = FigureCanvasTkAgg(fig, master=self.grafico_lineas_frame);
-        canvas.draw();
-        canvas.get_tk_widget().pack(fill=BOTH, expand=True);
+            # Llamar a la lógica para calcular amortización francesa
+            datos_amortizacion = OperacionesMF().calcularAmortizacionFrancesa(deuda_inicial, tasa_interes, n_periodos)
+
+            saldo_restante = [dato['saldo_restante'] for dato in datos_amortizacion]
+            intereses = [dato['interes'] for dato in datos_amortizacion]
+            amortizaciones = [dato['amortizacion'] for dato in datos_amortizacion]
+            periodos = list(range(1, n_periodos + 1))
+
+            # Crear el gráfico
+            figura = plt.Figure(figsize=(5, 4), dpi=100)
+            ax = figura.add_subplot(111)
+            ax.plot(periodos, saldo_restante, label="Saldo Restante", marker="o")
+            ax.plot(periodos, intereses, label="Interés", marker="x")
+            ax.plot(periodos, amortizaciones, label="Amortización", marker="s")
+            ax.set_title("Amortización Francesa")
+            ax.set_xlabel("Tiempo (Períodos)")
+            ax.set_ylabel("Dinero")
+            ax.legend()
+            ax.grid(True)
+
+            # Mostrar el gráfico en la interfaz
+            canvas = FigureCanvasTkAgg(figura, self.grafico_lineas_frame)
+            canvas.get_tk_widget().grid(column=0, row=0, sticky=(N, S, E, W))
+            canvas.draw()
         
     def CrearTablaAmortizacion(self,datos):
         # Crear un frame
@@ -280,11 +292,12 @@ class InterfazAmortizacion:
             if flag == True:
                 return datos;
         return datos;
-    
+    ## CALCULO DE AMORTIZACION
     def CalcularDeudaTotal(self,cuota):
         resultado = OperacionesMF.PagoTotalAmortizacion(cuota,self.periodoTxt.get());
         return resultado;
-    def CalcularCuota(self):
+    ## CALCULO DE CUOTAS:
+    def CalcularCuotaFrances(self):
         resultado = OperacionesMF.CalcularCuotaAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
         return resultado;
     # Metodos para la tabla
@@ -307,4 +320,3 @@ class InterfazAmortizacion:
             plt.close('all');
             #Llamamos de nuevo a la interfaz principal
             self.root.deiconify();
-        

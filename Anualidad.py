@@ -99,7 +99,6 @@ class InterfazAnualidadVencida:
         # Validar entradas vacías
         if ((self.montoPagoTxt.get() == "" or self.montoPagoTxt == None) or
             (self.tasaTxt.get() == "" or self.tasaTxt == None) or
-            (self.tasaTxtComboBox.get() == "--" or self.tasaTxtComboBox == None) or
             (self.periodoTxt.get() == "" or self.periodoTxt == None)):
 
             # Mostrar mensaje de error

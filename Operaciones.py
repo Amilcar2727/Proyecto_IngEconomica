@@ -116,7 +116,7 @@ class OperacionesMF:
             num = Deuda * tasaInteres * ((1+tasaInteres)**periodo);
             dem = (((1+tasaInteres)**periodo) - 1);
             cuota = num/dem;
-            return float(tasaInteres),float(OperacionesMF.Redondeo(cuota,2));
+            return float(OperacionesMF.Redondeo(cuota,2));
         except ValueError:
             pass;
     
@@ -130,55 +130,7 @@ class OperacionesMF:
         except ValueError:
             pass;
     
-    """Metodo para calcular el Interés en la tabla"""
-    @staticmethod
-    def AmortizacionTabla_Interes(saldoRestanteAnt, tasa):
-        try:
-            result = float(saldoRestanteAnt) * float(tasa);
-            return float(OperacionesMF.Redondeo(result,2));
-        except ValueError:
-            pass;
-    """Metodo para calcular Amortizacion(A): Amortizacion = Cuota - interes"""
-    @staticmethod
-    def AmortizacionTabla_Amortizacion(cuota,interes):
-        try:
-            #Codigo aqui:
-            result = float(cuota) - float(interes);
-            return float(OperacionesMF.Redondeo(result,2));
-        except ValueError:
-            pass;
-        
-    """Metodo para calcular Saldo del préstamo(S): Saldo pendiente"""
-    @staticmethod
-    def AmortizacionTabla_SaldoPendiente(saldoRestanteAnt, amortizacion):
-        try:
-            #Codigo aqui:
-            result = float(saldoRestanteAnt) - float(amortizacion);
-            return float(OperacionesMF.Redondeo(result,2));
-        except ValueError:
-            pass;
-        
-    """Metodo para calcular la deuda en un periodo"""
-    @staticmethod
-    def AmortizacionGrafica_DeudaActual(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
-        try:
-            Deuda = float(OperacionesMF.Convertir_ComaPunto(Deuda));
-            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(tasaInteres));
-            if(tasaFormato=="porcentaje"):
-                tasaInteres = tasaInteres/100;
-            periodo = float(periodo);
-            #Si el tiempo de la tasa es diferente al del periodo
-            if(tasaTiempo != periodoFormato):
-                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
-            #Calcular la cuota
-            loss,cuota = OperacionesMF.CalcularCuotaAmortizacion(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato);
-            #Calcular la deuda en tal fecha
-            prim = Deuda * ((1+tasaInteres)**periodo);
-            seg = (cuota/tasaInteres)*(((1+tasaInteres)**periodo)-1)
-            deudaAct = prim - seg;
-            return float(OperacionesMF.Redondeo(deudaAct,2));
-        except ValueError:
-            pass;
+    
     ### ============== CALCULAR DEPRECIACION LINEA RECTA ============= ###
     @staticmethod
     def DepreciacionLR(costoActivoFijo,valorDeRescate,periodo):
