@@ -2,11 +2,13 @@ from tkinter import *;
 from tkinter import ttk;
 from InteresSimple import InterfazInteresSimple;
 from InteresCompuesto import InterfazInteresCompuesto;
-from Amortizacion import InterfazAmortizacion;
+from Amortizacion import InterfazAmortizacionFrancesa, InterfazAmortizacionAmericana, InterfazAmortizacionAlemana;
 from Anualidad import InterfazAnualidadVencida;
 from Gradiente import InterfazGradienteAritmetico;
 from Depreciacion import InterfazDepreciacion;
 from VAN import InterfazVAN;
+from TIR import InterfazTIR;
+from PEI import InterfazPEI;
 
 class MatematicasFinancieras:
     def __init__(self, root):
@@ -38,11 +40,21 @@ class MatematicasFinancieras:
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
             self.ventanaIC = InterfazInteresCompuesto(self.root)
-        elif op == "Amortizacion":
+        elif op == "Amortizacion Francesa":
             # Ocultar la ventana principal
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
-            self.ventanaAmort = InterfazAmortizacion(self.root)
+            self.ventanaAmortFrancesa = InterfazAmortizacionFrancesa(self.root)
+        elif op == "Amortizacion Americana":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaAmortAmericana = InterfazAmortizacionAmericana(self.root)
+        elif op == "Amortizacion Alemana":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaAmortAlemana = InterfazAmortizacionAlemana(self.root)
         elif op == "Anualidad Vencida":
             # Ocultar la ventana principal
             self.root.withdraw()
@@ -63,6 +75,16 @@ class MatematicasFinancieras:
             self.root.withdraw()
             # Llamar al Método de la otra interfaz
             self.ventanaVAN = InterfazVAN(self.root)
+        elif op == "TIR":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaTIR = InterfazTIR(self.root)
+        elif op == "PEI":
+            # Ocultar la ventana principal
+            self.root.withdraw()
+            # Llamar al Método de la otra interfaz
+            self.ventanaPEI = InterfazPEI(self.root)
 
     # Salir del Programa
     def SalirPrograma(self):
@@ -95,7 +117,7 @@ class MatematicasFinancieras:
 
         # Menú Desplegable
         self.textoComboBox = StringVar(value="-Seleccionar-")
-        self.opciones = ["Interes Simple", "Interes Compuesto", "Amortizacion","Anualidad Vencida","Gradiente Aritmético", "Depreciacion Linea Recta","VAN"]
+        self.opciones = ["Interes Simple", "Interes Compuesto", "Amortizacion Francesa", "Amortizacion Americana", "Amortizacion Alemana", "Anualidad Vencida", "Gradiente Aritmético", "Depreciacion Linea Recta", "VAN", "TIR", "PEI"]
         self.combobox = ttk.Combobox(root, textvariable=self.textoComboBox, values=self.opciones)
         self.combobox["state"] = "readonly"
         self.combobox.grid(column=2, row=3, padx=5, pady=1, sticky=(E, W))
@@ -118,3 +140,4 @@ root = Tk()
 root.geometry("400x300+250+150")
 # Llamar al método principal
 MatematicasFinancieras(root)
+
