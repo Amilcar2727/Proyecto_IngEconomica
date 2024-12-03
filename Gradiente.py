@@ -2,127 +2,151 @@ from tkinter import *
 from tkinter import ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import re
 
-class InterfazFV:
-    # Método Inicial
+class InterfazGradientes:
     def __init__(self, root):
         self.root = root
-        self.interfazFV = Toplevel()
-        self.interfazFV.geometry("400x400+250+25")
-        self.interfazFV.title("Cálculo de Valor Futuro (FV)")
-        self.timer_id = None
+        self.interfazGradientes = Toplevel()
+        self.interfazGradientes.geometry("600x500+250+50")
+        self.interfazGradientes.title("Cálculo de Gradientes")
         self.datosBlancos = None
+        self.crearMenu()
 
-        # Inicializamos el frame para gráficos
-        self.grafico_frame = ttk.Frame(self.interfazFV, borderwidth=5, relief="groove", width=300, height=200)
-        self.grafico_frame.grid(column=0, row=1, columnspan=2, padx=10, pady=10, sticky=(N, E, S, W))
-        self.grafico_frame.grid_propagate(False)
-
-        self.MenuFV()
-
-    # Interfaz Valor Futuro
-    def MenuFV(self):
-        self.datos_frame = ttk.Frame(self.interfazFV, borderwidth=5, relief="solid", width=300, height=300)
-        self.datos_frame.grid(column=0, row=0, rowspan=7, pady=10, padx=10, sticky=(N, E, S, W))
+    def crearMenu(self):
+        # Frame principal
+        self.datos_frame = ttk.Frame(self.interfazGradientes, borderwidth=5, relief="solid", width=580, height=240)
+        self.datos_frame.grid(column=0, row=0, pady=10, padx=10, sticky=(N, E, S, W))
         self.datos_frame.grid_propagate(False)
 
-        self.tituloLb = ttk.Label(self.datos_frame, text="CÁLCULO DE VALOR FUTURO", font=("Helvetica", 12, "bold"))
-        self.tituloLb.grid(column=0, row=0, columnspan=2, padx=5, pady=10, sticky=(N, S, W))
+        # Título
+        self.tituloLb = ttk.Label(self.datos_frame, text="CÁLCULO DE GRADIENTES", font=("Helvetica", 14, "bold"))
+        self.tituloLb.grid(column=0, row=0, columnspan=2, padx=10, pady=10, sticky=W)
 
-        # Lectura Valor Actual (PV)
-        self.pvTxt = StringVar()
-        self.pvLb = ttk.Label(self.datos_frame, text="Valor Actual (PV):")
-        self.pvLb.grid(column=0, row=1, padx=5, pady=5, sticky=W)
-        self.pv_leer = ttk.Entry(self.datos_frame, textvariable=self.pvTxt)
-        self.pv_leer.grid(column=1, row=1, padx=5, pady=5, sticky=(W, E))
+        # Selección de tipo de gradiente
+        self.tipoGradiente = StringVar(value="Valor Presente Creciente")
+        self.tipoGradienteLb = ttk.Label(self.datos_frame, text="Selecciona el tipo de gradiente:")
+        self.tipoGradienteLb.grid(column=0, row=1, padx=5, pady=5, sticky=W)
 
-        # Lectura Tasa de Interés (r)
-        self.tasaTxt = StringVar()
-        self.tasaLb = ttk.Label(self.datos_frame, text="Tasa de Interés (r):")
-        self.tasaLb.grid(column=0, row=2, padx=4, pady=4, sticky=W)
-        self.tasa_leer = ttk.Entry(self.datos_frame, textvariable=self.tasaTxt)
-        self.tasa_leer.grid(column=1, row=2, padx=5, pady=5, sticky=(W, E))
+        self.gradienteOpciones = ttk.Combobox(self.datos_frame, textvariable=self.tipoGradiente, state="readonly")
+        self.gradienteOpciones['values'] = [
+            "Valor Presente Creciente",
+            "Valor Futuro Creciente",
+            "Valor Presente Decreciente",
+            "Cuota N-ésima"
+        ]
+        self.gradienteOpciones.grid(column=1, row=1, padx=5, pady=5, sticky=(W, E))
 
-        # Lectura Número de Periodos (n)
-        self.nTxt = StringVar()
-        self.nLb = ttk.Label(self.datos_frame, text="Número de Periodos (n):")
-        self.nLb.grid(column=0, row=3, padx=5, pady=5, sticky=W)
-        self.n_leer = ttk.Entry(self.datos_frame, textvariable=self.nTxt)
-        self.n_leer.grid(column=1, row=3, padx=5, pady=5, sticky=(W, E))
+        # Entrada de datos
+        self.entrada_frame = ttk.Frame(self.datos_frame)
+        self.entrada_frame.grid(column=0, row=2, columnspan=2, pady=10, sticky=(N, E, S, W))
+
+        self.entradas = {
+            "Monto Inicial (A)": StringVar(),
+            "Tasa de Interés (i)": StringVar(),
+            "Gradiente (G)": StringVar(),
+            "Número de Períodos (n)": StringVar()
+        }
+        self.entradas_widgets = {}
+
+        for i, (label, var) in enumerate(self.entradas.items()):
+            lb = ttk.Label(self.entrada_frame, text=label)
+            lb.grid(column=0, row=i, padx=5, pady=5, sticky=W)
+
+            entry = ttk.Entry(self.entrada_frame, textvariable=var)
+            entry.grid(column=1, row=i, padx=5, pady=5, sticky=(W, E))
+            self.entradas_widgets[label] = entry
 
         # Botón Calcular
-        self.resultadosBt = ttk.Button(self.datos_frame, text="Calcular", command=self.CalcularResultados)
-        self.resultadosBt.grid(column=0, row=4, padx=5, pady=(30, 10), sticky=(S))
+        self.calcularBt = ttk.Button(self.datos_frame, text="Calcular", command=self.calcularGradiente)
+        self.calcularBt.grid(column=0, row=3, columnspan=2, pady=10)
 
-        # Botón Volver al Menú Principal
-        self.volverMenuBt = ttk.Button(self.datos_frame, text="Volver Menú", command=self.VolverMenu)
-        self.volverMenuBt.grid(column=1, row=4, padx=5, pady=(30, 10), sticky=(S))
+        # Frame para el gráfico
+        self.grafico_frame = ttk.Frame(self.interfazGradientes, borderwidth=5, relief="groove", width=580, height=240)
+        self.grafico_frame.grid(column=0, row=1, padx=10, pady=10, sticky=(N, E, S, W))
 
-        # Evitar bugs y cerrando timers antes de un cerrado por el usuario
-        self.interfazFV.protocol("WM_DELETE_WINDOW", self.Cerrado_manual)
-
-    # Mostrar resultados
-    def MostrarResultados(self, fv):
-        self.resultados_frame = ttk.Frame(self.interfazFV, borderwidth=5, relief="groove", width=210, height=200)
-        self.resultados_frame.grid(column=1, row=0, rowspan=7, padx=(0, 10), pady=10, sticky=(N, E, S, W))
-        self.resultados_frame.grid_propagate(False)
-
-        # Titulo
-        self.tituloResultadosLb = ttk.Label(self.resultados_frame, text="RESULTADOS:", font=("Helvetica", 10, "bold"))
-        self.tituloResultadosLb.grid(column=0, row=0, padx=5, pady=5, sticky=(W, N))
-
-        # Valor Futuro
-        self.resulFvLb = ttk.Label(self.resultados_frame, text="Valor Futuro (FV):", font=("Helvetica", 9, "bold"))
-        self.resulFvLb.grid(column=0, row=1, padx=5, pady=5, sticky=(W))
-        self.fvText = StringVar()
-        self.fvLb = ttk.Label(self.resultados_frame, textvariable=self.fvText)
-        self.fvLb.grid(column=0, row=2, padx=5, pady=(0, 5), sticky=(W, N))
-
-        # Mostrar resultado en pantalla
-        self.fvText.set(f"{fv:.2f}")
-
-    # Calcular resultado de FV
-    def CalcularResultados(self):
-        if (self.pvTxt.get() == "" or self.pvTxt.get() == None) or (self.tasaTxt.get() == "" or self.tasaTxt.get() == None) or (self.nTxt.get() == "" or self.nTxt.get() == None):
-            # Si hay datos en blanco, solicitar los datos
-            if self.datosBlancos is not None:
-                self.datosBlancos.destroy()
-            self.datosBlancos = ttk.Label(self.datos_frame, text="Por favor, rellena todos los espacios", font=("Helvetica", 9, "bold"), foreground="red")
-            self.datosBlancos.grid(column=0, row=5, columnspan=2, sticky=(S, W))
-            self.timer_id = self.datos_frame.after(5000, self.datosBlancos.destroy)
+    def calcularGradiente(self):
+        # Leer los valores de entrada
+        try:
+            A = float(self.entradas["Monto Inicial (A)"].get())
+            i = float(self.entradas["Tasa de Interés (i)"].get())
+            G = float(self.entradas["Gradiente (G)"].get())
+            n = int(self.entradas["Número de Períodos (n)"].get())
+        except ValueError:
+            self.mostrarError("Por favor, ingresa valores válidos.")
             return
 
-        # Lógica para calcular el valor futuro
-        pv = float(self.pvTxt.get())
-        r = float(self.tasaTxt.get()) / 100  # Convertir a decimal
-        n = int(self.nTxt.get())
+        # Determinar el tipo de gradiente seleccionado
+        tipo = self.tipoGradiente.get()
 
-        fv = pv * (1 + r) ** n
-        self.MostrarResultados(fv)
-        self.MostrarGrafico(pv, fv)
+        if tipo == "Valor Presente Creciente":
+            resultado = self.valorPresenteCreciente(A, G, i, n)
+        elif tipo == "Valor Futuro Creciente":
+            resultado = self.valorFuturoCreciente(A, G, i, n)
+        elif tipo == "Valor Presente Decreciente":
+            resultado = self.valorPresenteDecreciente(A, G, i, n)
+        elif tipo == "Cuota N-ésima":
+            resultado = self.cuotaNesima(A, G, i, n)
+        else:
+            self.mostrarError("Selecciona un tipo de gradiente válido.")
+            return
 
-    # Mostrar gráfico de barras
-    def MostrarGrafico(self, pv, fv):
+        # Mostrar los resultados en un gráfico
+        self.mostrarGrafico(tipo, resultado, n)
+
+    def valorPresenteCreciente(self, A, G, i, n):
+        return [A + G * t for t in range(n + 1)]
+
+    def valorFuturoCreciente(self, A, G, i, n):
+        return [A * (1 + i)**t + G * t for t in range(n + 1)]
+
+    def valorPresenteDecreciente(self, A, G, i, n):
+        return [A - G * t for t in range(n + 1)]
+
+    def cuotaNesima(self, A, G, i, n):
+        return [A + G * t * (1 + i)**t for t in range(n + 1)]
+
+    def mostrarGrafico(self, tipo, valores, n):
         for widget in self.grafico_frame.winfo_children():
             widget.destroy()
 
-        etiquetas = ['PV', 'FV']
-        valores = [pv, fv]
+        # Crear gráfico de líneas
+        fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
+        ax.plot(range(n + 1), valores, marker='o', linestyle='-', label=tipo)
+        ax.set_title(f"Gradiente: {tipo}", fontsize=12)
+        ax.set_xlabel("Período (n)", fontsize=10)
+        ax.set_ylabel("Valor", fontsize=10)
+        ax.legend()
+        ax.grid(True, linestyle='--', alpha=0.6)
 
-        fig, ax = plt.subplots(figsize=(4, 3))
-        ax.bar(etiquetas, valores, color=['blue', 'green'])
-        ax.set_ylabel('Valor (S/.)')
-        ax.set_title('Cálculo de Valor Futuro')
-
+        # Integrar gráfico con Tkinter
         canvas = FigureCanvasTkAgg(fig, master=self.grafico_frame)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=0, column=0, sticky=(N, S, E, W))
+
+        # Asegurar que el gráfico se ajuste correctamente
+        self.grafico_frame.columnconfigure(0, weight=1)
+        self.grafico_frame.rowconfigure(0, weight=1)
         canvas.draw()
-        canvas.get_tk_widget().pack(fill=BOTH, expand=True)
 
-    # Función de cerrar ventana manualmente
-    def Cerrado_manual(self):
-        self.interfazFV.destroy()
+    def mostrarError(self, mensaje):
+        if self.datosBlancos is not None:
+            self.datosBlancos.destroy()
 
-    # Función para volver al menú principal
+        self.datosBlancos = ttk.Label(self.datos_frame, text=mensaje, font=("Helvetica", 9, "bold"), foreground="red")
+        self.datosBlancos.grid(column=0, row=4, columnspan=2, pady=10)
+    
     def VolverMenu(self):
-        self.interfazFV.destroy();
+        if self.interfazGradientes.winfo_exists():
+            #Eliminamos la segunda ventana
+            self.interfazGradientes.destroy();
+            #ELiminamos grafico
+            plt.close('all');
+            #Llamamos de nuevo a la interfaz principal
+            self.root.deiconify();
+
+    def Cerrado_manual(self):
+        self.interfazGradientes.destroy();
+        self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
+        print("El programa se ha cerrado correctamente.");

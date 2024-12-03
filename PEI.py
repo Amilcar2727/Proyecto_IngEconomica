@@ -64,7 +64,7 @@ class InterfazPEI:
 
         # Gráfico de flujos acumulados
         self.grafico_frame = ttk.Frame(self.resultados_frame)
-        self.grafico_frame.grid(column=0, row=3, rowspan=2, pady=10, sticky=(N, E, S, W))
+        self.grafico_frame.grid(column=0, row=3, sticky=(N, E, S, W))
 
     # Calcular PEI
     def CalcularPEI(self):
@@ -90,7 +90,7 @@ class InterfazPEI:
             widget.destroy()
 
         n = len(flujos_acumulados)
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(2.5, 2.5), dpi=100);
         ax.plot(range(n), flujos_acumulados, marker='o', label='Flujos Acumulados')
         ax.axhline(y=0, color='r', linestyle='--', label='Equilibrio')
         ax.set_title("Flujos de Efectivo Acumulados")
@@ -113,8 +113,18 @@ class InterfazPEI:
         pei = flujos.index(flujo) if acumulado >= 0 else "Inversión no recuperada"
         return pei, flujos_acumulados
 
-    def VolverMenu(self):
-        self.interfazPEI.destroy()
-
     def Cerrado_manual(self):
-        self.interfazPEI.destroy()
+        self.interfazPEI.destroy();
+        self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
+        print("El programa se ha cerrado correctamente.");
+        
+    def VolverMenu(self):
+        if self.interfazPEI.winfo_exists():
+            #Eliminamos la segunda ventana
+            self.interfazPEI.destroy();
+            #ELiminamos grafico
+            plt.close('all');
+            #Llamamos de nuevo a la interfaz principal
+            self.root.deiconify();

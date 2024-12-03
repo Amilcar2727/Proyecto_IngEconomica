@@ -37,8 +37,12 @@ class InterfazVAN:
 
         # Botón para calcular el VAN
         self.calcularBt = ttk.Button(self.datos_frame, text="Calcular", command=self.CalcularVAN)
-        self.calcularBt.grid(column=0, row=4, columnspan=2, padx=5, pady=20, sticky=(N, S, W, E))
+        self.calcularBt.grid(column=0, row=4, padx=5, pady=20, sticky=(N, S, W, E))
 
+        # Botón Volver Menu Principal
+        self.volverMenuBt = ttk.Button(self.datos_frame, text="Volver Menu", command=self.VolverMenu)
+        self.volverMenuBt.grid(column=1, row=4, padx=5, pady=10)
+        
         # Evitar cerrar incorrectamente la ventana
         self.interfazVAN.protocol("WM_DELETE_WINDOW", self.Cerrado_manual)
 
@@ -100,5 +104,18 @@ class InterfazVAN:
         mensajeLb = ttk.Label(self.datos_frame, text=mensaje, foreground=color)
         mensajeLb.grid(column=0, row=5, columnspan=2, pady=5, sticky=W)
 
+    def VolverMenu(self):
+        if self.interfazVAN.winfo_exists():
+            #Eliminamos la segunda ventana
+            self.interfazVAN.destroy();
+            #ELiminamos grafico
+            plt.close('all');
+            #Llamamos de nuevo a la interfaz principal
+            self.root.deiconify();
+
     def Cerrado_manual(self):
-        self.interfazVAN.destroy()
+        self.interfazVAN.destroy();
+        self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
+        print("El programa se ha cerrado correctamente.");

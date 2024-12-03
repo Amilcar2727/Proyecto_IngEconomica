@@ -99,9 +99,10 @@ class OperacionesMF:
             pass;
     
     # ===== METODOS PARA AMORTIZACIÓN =====:
+    ## ===> FRANCES <===
     """Metodo para calcular Cuota(C):"""
     @staticmethod
-    def CalcularCuotaAmortizacion(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
+    def CalcularCuotaFrances(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
         try:
             #Codigo aqui:
             Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
@@ -119,18 +120,84 @@ class OperacionesMF:
             return float(OperacionesMF.Redondeo(cuota,2));
         except ValueError:
             pass;
-    
-    """Metodo para calcular Pago Total generado por las Cuotas"""
     @staticmethod
-    def PagoTotalAmortizacion(cuota,periodo):
+    def PagoTotalFrances(cuota,periodo):
         try:
             #Codigo aqui:
             pagoT = float(cuota)*float(periodo);
             return float(OperacionesMF.Redondeo(pagoT,2));
         except ValueError:
             pass;
+    #------------ TABLA ------------
     
-    
+    ## ===> ALEMAN <===
+    @staticmethod
+    def CalcularAmortizacionAleman(Deuda,periodo):
+        try:
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
+            periodo = float(periodo);
+            AmortFija = Deuda/periodo;
+            return float(OperacionesMF.Redondeo(AmortFija,2));
+        except ValueError:
+            pass;
+    @staticmethod
+    def InteresTotalesAleman(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
+        try:
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(str(tasaInteres)));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
+            periodo = float(periodo);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            #Calcular el interes
+            interesT = tasaInteres*(Deuda*(periodo+1)/2)
+            return float(OperacionesMF.Redondeo(interesT,2));
+        except ValueError:
+            pass;
+    @staticmethod
+    def PagoTotalAleman(Deuda,interesesT):
+        try:
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
+            pagoT = Deuda + interesesT;
+            return float(OperacionesMF.Redondeo(pagoT,2));
+        except ValueError:
+            pass;
+    ## ===> AMERICANA <===
+    @staticmethod
+    def CalcularInteresesAmericano(Deuda,tasaInteres,tasaTiempo,tasaFormato,periodo,periodoFormato):
+        try:
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
+            tasaInteres = float(OperacionesMF.Convertir_ComaPunto(str(tasaInteres)));
+            if(tasaFormato=="porcentaje"):
+                tasaInteres = tasaInteres/100;
+            periodo = float(periodo);
+            #Si el tiempo de la tasa es diferente al del periodo
+            if(tasaTiempo != periodoFormato):
+                tasaInteres=OperacionesMF.ConversionTiempo(tasaInteres,tasaTiempo,periodoFormato);
+            #Calcular Interes
+            interesPeriodico = Deuda * tasaInteres;
+            return float(OperacionesMF.Redondeo(interesPeriodico,2));
+        except ValueError:
+            pass;
+    @staticmethod
+    def InteresTotalesAmericano(InteresPeriodico, periodo):
+        try:
+            periodo = float(periodo);
+            interesesTotales = InteresPeriodico * periodo;
+            return float(OperacionesMF.Redondeo(interesesTotales,2));
+        except ValueError:
+            pass;
+    @staticmethod
+    def PagoTotalAmericano(Deuda,interesTotales):
+        try:
+            Deuda = float(OperacionesMF.Convertir_ComaPunto(str(Deuda)));
+            #Codigo aqui:
+            pagoT = Deuda+interesTotales;
+            return float(OperacionesMF.Redondeo(pagoT,2));
+        except ValueError:
+            pass;
     ### ============== CALCULAR DEPRECIACION LINEA RECTA ============= ###
     @staticmethod
     def DepreciacionLR(costoActivoFijo,valorDeRescate,periodo):

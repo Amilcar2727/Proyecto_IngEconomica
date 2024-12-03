@@ -4,7 +4,7 @@ from InteresSimple import InterfazInteresSimple;
 from InteresCompuesto import InterfazInteresCompuesto;
 from Amortizacion import InterfazAmortizacion;
 from Anualidad import InterfazAnualidadVencida;
-from Gradiente import InterfazFV;
+from Gradiente import InterfazGradientes;
 from Depreciacion import InterfazDepreciacion;
 from VAN import InterfazVAN;
 from TIR import InterfazTIR;
@@ -42,7 +42,7 @@ class MatematicasFinancieras:
             elif op == "Anualidad Vencida":
                 self.ventanaAV = InterfazAnualidadVencida(self.root);
             elif op == "Gradiente Aritmetica":
-                self.ventanaGA = InterfazFV(self.root);
+                self.ventanaGA = InterfazGradientes(self.root);
             elif op == "Depreciacion Linea Recta":
                 self.ventanaDL = InterfazDepreciacion(self.root);
             elif op == "VAN":

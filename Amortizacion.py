@@ -120,17 +120,18 @@ class InterfazAmortizacion:
         self.tituloResultadosLb = ttk.Label(self.resultados_frame,text="RESULTADOS:",font=("Helvetica",10,"bold"));
         self.tituloResultadosLb.grid(column=0,row=0,padx=5,pady=5,sticky=(W,N))
         ##Cuota
-        self.resulIntLb = ttk.Label(self.resultados_frame,text="Deuda Total:",font=("Helvetica", 9, "bold"));
-        self.resulIntLb.grid(column=0,row=1,padx=5,pady=5,sticky=(W));
-        self.deudaTotalText = StringVar();
-        self.deudaLb = ttk.Label(self.resultados_frame,textvariable=self.deudaTotalText);
-        self.deudaLb.grid(column=0,row=2,padx=5,pady=(0,5),sticky=(W,N));
+        self.result1Lb = ttk.Label(self.resultados_frame,text="Pago Total:",font=("Helvetica", 9, "bold"));
+        self.result1Lb.grid(column=0,row=1,padx=5,pady=5,sticky=(W));
+        self.result1Text = StringVar();
+        self.resultTotal1Lb = ttk.Label(self.resultados_frame,textvariable=self.result1Text);
+        self.resultTotal1Lb.grid(column=0,row=2,padx=5,pady=(0,5),sticky=(W,N));
         ##Deuda Futuro
-        self.resulCuota = ttk.Label(self.resultados_frame,text="Cuota RECOMENDADA:",font=("Helvetica", 9, "bold"));
-        self.resulCuota.grid(column=0,row=3,padx=5,pady=5,sticky=(W));
-        self.cuotaText = StringVar();
-        self.cuotaLB = ttk.Label(self.resultados_frame,textvariable=self.cuotaText);
-        self.cuotaLB.grid(column=0,row=4,padx=5,sticky=(W,N));
+        self.result2 = StringVar();
+        self.result2Lb = ttk.Label(self.resultados_frame,textvariable=self.result2,text="Cuota RECOMENDADA:",font=("Helvetica", 9, "bold"));
+        self.result2Lb.grid(column=0,row=3,padx=5,pady=5,sticky=(W));
+        self.result2Text = StringVar();
+        self.resultTotal2Lb = ttk.Label(self.resultados_frame,textvariable=self.result2Text);
+        self.resultTotal2Lb.grid(column=0,row=4,padx=5,sticky=(W,N));
         
         
         self.resultados_lineas_frame = ttk.Frame(self.resultados_frame,width=210, height=350);
@@ -170,16 +171,27 @@ class InterfazAmortizacion:
         #Obtener el sistema de amortizacion
         op = self.comboboxS.get();
         if op == "Sistema Frances":
-            pass;
+            self.result2.set("Cuota RECOMENDADA:");
+            cuotaPago = self.CalcularCuotaFrances();
+            deudaT = self.CalcularDeudaTotalFrances(cuotaPago);
+            self.result1Text.set(deudaT);
+            self.result2Text.set(cuotaPago);
         elif op == "Sistema Aleman":
-            pass;
+            self.result2.set("Amortización RECOMENDADA:");
+            amortizacion = self.CalcularAmortizacionAleman();
+            interesesTotales = self.CalcularInteresesTAleman();
+            deudaT = self.CalcularDeudaTotalAleman(interesesTotales);
+            self.result1Text.set(deudaT);
+            self.result2Text.set(amortizacion);
         elif op == "Sistema Americano":
-            pass;
+            self.result2.set("Intereses RECOMENDADOS:");
+            intereses = self.CalcularInteresesAmericanos();
+            interesesTotales = self.CalcularInteresesTAmericanos(intereses);
+            deudaT = self.CalcularDeudaTotalAmericano(interesesTotales);
+            self.result1Text.set(deudaT);
+            self.result2Text.set(intereses);
         ##calcular Cuota y Deuda Futuro
-        cuotaPago = self.CalcularCuota(op);
-        deudaT = self.CalcularDeudaTotal(cuotaPago);
-        self.deudaTotalText.set(deudaT);
-        self.cuotaText.set(cuotaPago);
+        
         
         #Mostrar Tablas
         #datos_amortizacion = self.GenerarDatosAmortizacion(cuotaPago);
@@ -292,15 +304,26 @@ class InterfazAmortizacion:
             if flag == True:
                 return datos;
         return datos;
-    ## CALCULO DE AMORTIZACION
-    def CalcularDeudaTotal(self,cuota):
-        resultado = OperacionesMF.PagoTotalAmortizacion(cuota,self.periodoTxt.get());
-        return resultado;
+
+    """->>>>>>>>>>>>> METODOS DE CALCULO DE OPERACIONES EXTRAS >>>>>>>>>>>>>>"""    
     ## CALCULO DE CUOTAS:
     def CalcularCuotaFrances(self):
-        resultado = OperacionesMF.CalcularCuotaAmortizacion(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
-        return resultado;
-    # Metodos para la tabla
+        return OperacionesMF.CalcularCuotaFrances(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
+    def CalcularAmortizacionAleman(self):
+        return OperacionesMF.CalcularAmortizacionAleman(self.DeudaInicTxt.get(),self.periodoTxt.get());
+    def CalcularInteresesTAleman(self):
+        return OperacionesMF.InteresTotalesAleman(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
+    def CalcularInteresesAmericanos(self):
+        return OperacionesMF.CalcularInteresesAmericano(self.DeudaInicTxt.get(),self.tasaTxt.get(),self.tasaTxtComboBox.get(),self.seleccion_boton_I.get(),self.periodoTxt.get(),self.seleccion_boton_T.get());
+    def CalcularInteresesTAmericanos(self,intereses):
+        return OperacionesMF.InteresTotalesAmericano(intereses,self.periodoTxt.get());
+    ## CALCULO DE DEUDA TOTAL
+    def CalcularDeudaTotalFrances(self,cuota):
+        return OperacionesMF.PagoTotalFrances(cuota,self.periodoTxt.get());
+    def CalcularDeudaTotalAleman(self,interesesTotales):
+        return OperacionesMF.PagoTotalAleman(self.DeudaInicTxt.get(),interesesTotales);
+    def CalcularDeudaTotalAmericano(self,interesesTotales):
+        return OperacionesMF.PagoTotalAmericano(self.DeudaInicTxt.get(),interesesTotales);
     
     # Operaciones de apoyo para evitar bugs
     def Cerrado_manual(self):

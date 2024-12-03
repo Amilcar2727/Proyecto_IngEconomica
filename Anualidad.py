@@ -58,11 +58,6 @@ class InterfazAnualidadVencida:
         # Evitar bugs cerrando la ventana
         self.interfazAV.protocol("WM_DELETE_WINDOW", self.Cerrado_manual)
 
-    # Validar solo entrada numérica
-    def Check_Entrada(self, newval):
-        return re.match(r'^[0-9][.,]?[0-9]$', newval) is not None and newval.count('.') <= 1 and newval.count(',') <= 1 and len(newval) <= 12
-
-    # Mostrar Resultados
     def MostrarResultados(self):
         # Frame para los resultados
         self.resultados_frame = ttk.Frame(self.interfazAV, borderwidth=5, relief="groove", width=210, height=300)
@@ -87,21 +82,16 @@ class InterfazAnualidadVencida:
         self.valorF_Lb = ttk.Label(self.resultados_frame, textvariable=self.valorFText)
         self.valorF_Lb.grid(column=0, row=4, padx=5, sticky=(W, N))
 
-        # Gráfico de pie
-        self.grafico_frame = ttk.Frame(self.resultados_frame)
-        self.grafico_frame.grid(column=0, row=5, rowspan=2, pady=10, sticky=(N, E, S, W))
+        # Gráfico
+        self.grafico_frame = ttk.Frame(self.interfazAV)
+        self.grafico_frame.grid(column=0, row=7, rowspan=2, padx=10,pady=10, sticky=(N, E, S, W))
 
-    # Llamado a las Operaciones
     def CalcularResultados(self):
-        # Limpiar gráficos anteriores
-        plt.close('all')
-
         # Validar entradas vacías
         if ((self.montoPagoTxt.get() == "" or self.montoPagoTxt == None) or
             (self.tasaTxt.get() == "" or self.tasaTxt == None) or
             (self.periodoTxt.get() == "" or self.periodoTxt == None)):
 
-            # Mostrar mensaje de error
             if self.datosBlancos is not None:
                 self.datosBlancos.destroy()
 
@@ -111,7 +101,7 @@ class InterfazAnualidadVencida:
             return
 
         # Mostrar resultados
-        self.interfazAV.geometry("540x700+250+25")
+        self.interfazAV.geometry("650x800+250+25")
         self.MostrarResultados()
 
         # Calcular valor presente y futuro
@@ -124,26 +114,45 @@ class InterfazAnualidadVencida:
         self.MostrarGrafico(self.montoPagoTxt.get(), valorPresente)
 
     def MostrarGrafico(self, montoPago, valorPresente):
-        # Limpiar el área del gráfico
+        # Limpiar el área del gráfico antes de generar uno nuevo
         for widget in self.grafico_frame.winfo_children():
             widget.destroy()
 
-        # Datos para el gráfico
-        etiquetas = ['Pago Anual (A)', 'Valor Presente (PV)']
-        valores = [float(OperacionesMF.Convertir_ComaPunto(montoPago)), float(valorPresente)]
+        # Convertir valores de entrada y calcular los datos necesarios
+        montoPago = float(OperacionesMF.Convertir_ComaPunto(montoPago))
+        valorPresente = float(valorPresente)
+        tasa = float(self.tasaTxt.get())
+        n = int(self.periodoTxt.get())
 
-        # Crear gráfico de pie
-        fig, ax = plt.subplots(figsize=(2, 1.5))
-        ax.set_title("Pago Anual vs Valor Presente").set_fontsize(7)
-        ax.pie(valores, labels=etiquetas, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')
+        # Generar los datos para los periodos y el valor presente acumulado
+        periodos = list(range(1, n + 1))
+        valores_presente = [montoPago * ((1 - (1 + tasa) ** -t) / tasa) for t in periodos]
 
-        # Mostrar gráfico en Tkinter
+        # Crear el gráfico
+        fig, ax = plt.subplots(figsize=(4.5, 3.5), dpi=100)  # Ajustar tamaño y resolución
+        ax.plot(periodos, valores_presente, marker='o', linestyle='-', label="Valor Presente Acumulado")
+        ax.set_title("Anualidad Vencida: Valor Presente por Periodo", fontsize=12)
+        ax.set_xlabel("Periodo", fontsize=10)
+        ax.set_ylabel("Valor Presente ($)", fontsize=10)
+        ax.legend(fontsize=9)
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        # Ajustar los límites del eje para mejorar la visualización
+        ax.set_xlim(1, n)
+        ax.set_ylim(0, max(valores_presente) * 1.1)
+
+        # Mostrar el gráfico dentro del frame de la interfaz
         canvas = FigureCanvasTkAgg(fig, master=self.grafico_frame)
-        canvas.get_tk_widget().grid(row=0, column=0, pady=10)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=0, column=0, sticky=(N, S, E, W))
+
+        # Asegurar que el frame de gráficos se expanda correctamente
+        self.grafico_frame.columnconfigure(0, weight=1)
+        self.grafico_frame.rowconfigure(0, weight=1)
+
+        # Dibujar el gráfico
         canvas.draw()
 
-    # Calcular valor presente (fórmula estándar para anualidad vencida)
     def CalcularValorPresente(self):
         A = float(self.montoPagoTxt.get())
         tasa = float(self.tasaTxt.get())
@@ -151,17 +160,26 @@ class InterfazAnualidadVencida:
         valorPresente = A * ((1 - (1 + tasa)**-n) / tasa)
         return round(valorPresente, 2)
 
-    # Calcular valor futuro (fórmula estándar para anualidad vencida)
     def CalcularValorFuturo(self, valorPresente):
         tasa = float(self.tasaTxt.get())
         n = int(self.periodoTxt.get())
         valorFuturo = valorPresente * (1 + tasa)**n
         return round(valorFuturo, 2)
 
-    # Volver al menú anterior
     def VolverMenu(self):
-        self.interfazAV.destroy()
+        if self.interfazAV.winfo_exists():
+            #Eliminamos la segunda ventana
+            self.interfazAV.destroy();
+            #ELiminamos grafico
+            plt.close('all');
+            #Llamamos de nuevo a la interfaz principal
+            self.root.deiconify();
 
-    # Cerrar manualmente
     def Cerrado_manual(self):
-        self.interfazAV.destroy()
+        if self.timer_id is not None:
+            self.interfazAV.after_cancel(self.timer_id);
+        self.interfazAV.destroy();
+        self.root.destroy();
+        #ELiminamos grafico
+        plt.close('all');
+        print("El programa se ha cerrado correctamente.");
